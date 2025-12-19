@@ -1,113 +1,91 @@
 use eframe::egui;
-use egui_dock::{DockArea, DockState, NodeIndex, Style};
+use egui_dock::{DockArea, DockState, NodeIndex};
 
-use crate::tabs::{MyTab, MyTabViewer, TabKind};
-use crate::utils::{hex_to_color};
-use crate::widgets::{menubar, windows};
-
-
+use crate::docktabs::{MyTab, MyTabViewer, TabKind};
+use crate::theme::{self, Theme};
+use crate::widgets::windows::draw_window_frame;
+use crate::widgets::{menubar};
 
 // MyApp
 pub(crate) struct MyApp {
     pub tree: DockState<MyTab>,
     pub search_text: String,
+    pub tab_id_counter: u32,
+}
+
+impl MyApp {
+    pub fn create_tab(&mut self, kind: TabKind) -> MyTab {
+        self.tab_id_counter += 1;
+        MyTab {
+            kind: kind.clone(),
+            title: format!("{:?}", kind),
+            id: self.tab_id_counter,
+        }
+    }
 }
 
 impl Default for MyApp {
     fn default() -> Self {
-        let tab1 = MyTab {
-            kind: TabKind::SceneView,
-            title: "SceneView".to_string(),
-            id: 1,
+        // Create default tabs
+        let mut local_id_counter = 1;
+
+        let mut next_tab = |kind: TabKind| -> MyTab {
+            let tab = MyTab {
+                kind: kind.clone(),
+                title: format!("{:?}", kind),
+                id: local_id_counter,
+            };
+            local_id_counter += 1;
+            tab
         };
 
-        let tab2 = MyTab {
-            kind: TabKind::Explorer,
-            title: "Explorer".to_string(),
-            id: 3,
-        };
-
-        let tab3 = MyTab {
-            kind: TabKind::Properties,
-            title: "Properties".to_string(),
-            id: 2,
-        };
-
+        let tab1 = next_tab(TabKind::SceneView);
+        let tab2 = next_tab(TabKind::Explorer);
+        let tab3 = next_tab(TabKind::Properties);
         let mut tree = DockState::new(vec![tab1]);
 
+        // Apply Dock layout
         let [_, b] = tree
             .main_surface_mut()
             .split_right(NodeIndex::root(), 0.7, vec![tab2]);
 
         let [_, _] = tree.main_surface_mut().split_below(b, 0.5, vec![tab3]);
 
-        Self { tree, search_text: String::new() }
+        // Return Self
+        Self {
+            tree,
+            search_text: String::new(),
+            tab_id_counter: local_id_counter
+        }
     }
 }
 
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.set_visuals(egui::Visuals::dark());
+        
+        let theme: Theme = Theme::from_ctx(ctx);
 
-        let bg_color = hex_to_color("#181818");
-        let panel_color = hex_to_color("#282828");
+        // Draw Window Frame
+        let corner_radius: egui::CornerRadius = draw_window_frame(ctx, &theme);
 
-        let is_maximized = ctx.input(|i| i.viewport().maximized.unwrap_or(false));
-        let corner_radius = if is_maximized {
-            egui::CornerRadius::ZERO
-        } else {
-            egui::CornerRadius::same(12)
-        };
-
-        let screen_rect = ctx.content_rect();
-        ctx.layer_painter(egui::LayerId::background()).rect_filled(
-            screen_rect,
-            corner_radius,
-            bg_color
-        );
-
+        // Top Menu Bar
         egui::TopBottomPanel::top("main_menu_bar")
             .show_separator_line(false)
             .frame(egui::Frame {
                 inner_margin: egui::Margin::symmetric(15, 8),
-                fill: bg_color,
+                fill: theme.bg,
                 stroke: egui::Stroke::NONE,
                 corner_radius,
                 ..Default::default()
             })
             .show(ctx, |ui| {
-                ui.horizontal(|ui| {
-                    menubar::menu_bar(self, ctx, ui)
-                });
+                ui.horizontal(|ui| menubar::menu_bar(self, ctx, ui));
             });
 
-        // Draw resize handles around the window edges
-        windows::draw_resize_handles(ctx, is_maximized);
-
-        let mut style = Style::from_egui(ctx.style().as_ref());
-        style.separator.width = 5.0;
-        style.separator.extra_interact_width = 4.0;
-        style.separator.color_idle = bg_color;
-        style.separator.color_hovered = bg_color;
-        style.separator.color_dragged = bg_color;
-        style.tab.tab_body.stroke = egui::Stroke::NONE;
-
-        style.tab.active.outline_color = egui::Color32::TRANSPARENT;
-        style.tab.inactive.outline_color = egui::Color32::TRANSPARENT;
-        style.tab.hovered.outline_color = egui::Color32::TRANSPARENT;
-        style.tab.focused.outline_color = egui::Color32::TRANSPARENT;
-        style.tab.active_with_kb_focus.outline_color = egui::Color32::TRANSPARENT;
-        style.tab.inactive_with_kb_focus.outline_color = egui::Color32::TRANSPARENT;
-        style.tab.focused_with_kb_focus.outline_color = egui::Color32::TRANSPARENT;
-
-        style.tab.active.bg_fill = panel_color;
-        style.tab.inactive.bg_fill = panel_color;
-        style.tab.hovered.bg_fill = panel_color;
-        style.tab.focused.bg_fill = panel_color;
-
-        style.tab_bar.bg_fill = bg_color;
-        style.tab.tab_body.bg_fill = panel_color;
-
+        
+        // Tab Dock Area
+        let style = theme::get_dock_style(ctx, &theme);
         DockArea::new(&mut self.tree)
             .style(style)
             .show_leaf_collapse_buttons(false)
@@ -120,4 +98,3 @@ impl eframe::App for MyApp {
         egui::Rgba::TRANSPARENT.to_array()
     }
 }
-

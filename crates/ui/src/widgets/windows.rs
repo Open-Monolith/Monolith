@@ -1,5 +1,28 @@
 use eframe::egui;
 
+use crate::{theme::Theme, widgets::windows};
+
+
+pub(crate) fn draw_window_frame(ctx: &egui::Context, theme: &Theme) -> egui::CornerRadius{
+    let is_maximized = ctx.input(|i| i.viewport().maximized.unwrap_or(false));
+
+    let corner_radius = if is_maximized {
+        egui::CornerRadius::ZERO
+    } else {
+        egui::CornerRadius::same(12)
+    };
+
+    windows::draw_resize_handles(ctx, is_maximized);
+
+    let screen_rect = ctx.content_rect();
+    ctx.layer_painter(egui::LayerId::background()).rect_filled(
+        screen_rect,
+        corner_radius,
+        theme.bg,
+    );
+
+    corner_radius
+}
 
 // Function to draw resize handles on window edges and corners
 pub(crate) fn draw_resize_handles(ctx: &egui::Context, is_maximized: bool) {

@@ -1,4 +1,5 @@
 use eframe::egui;
+use crate::tabs;
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum TabKind {
@@ -51,16 +52,16 @@ impl egui_dock::TabViewer for MyTabViewer {
 
         match tab.kind {
             TabKind::Explorer => {
-                ui.label(format!("Tab title is {}", tab.title));
+                tabs::explorer::show(ui, tab);
             }
             TabKind::Console => {
-                ui.label(format!("Tab title is {}", tab.title));
+                tabs::console::show(ui, tab);
             }
             TabKind::Properties => {
-                ui.label(format!("Tab title is {}", tab.title));
+                tabs::properties::show(ui, tab);
             }
             TabKind::SceneView => {
-                ui.label(format!("Tab title is {}", tab.title));
+                tabs::sceneview::show(ui, tab);
             }
         }
     }

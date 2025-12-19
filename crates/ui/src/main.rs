@@ -1,9 +1,11 @@
 use eframe::{NativeOptions, egui};
 
 mod app;
-mod tabs;
+mod docktabs;
 mod utils;
 mod widgets;
+mod theme;
+mod tabs;
 
 use app::MyApp;
 

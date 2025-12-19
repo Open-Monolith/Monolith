@@ -1,11 +1,7 @@
 use crate::app::MyApp;
 use eframe::egui;
 
-pub(crate) fn menu_bar(
-    app: &mut MyApp,
-    ctx: &egui::Context,
-    ui: &mut egui::Ui,
-) -> egui::InnerResponse<()> {
+pub(crate) fn menu_bar(app: &mut MyApp, ctx: &egui::Context, ui: &mut egui::Ui) -> egui::InnerResponse<()> {
     egui::MenuBar::new().ui(ui, |ui| {
         file_menu(ctx, ui);
         edit_menu(ctx, ui);
@@ -158,6 +154,7 @@ fn window_controls(ctx: &egui::Context, ui: &mut egui::Ui) {
 
 fn topbar_resize(ctx: &egui::Context, ui: &mut egui::Ui) {
     let available_width = ui.available_width();
+    
     if available_width > 0.0 {
         let (_rect, response) = ui.allocate_exact_size(
             egui::vec2(available_width, ui.available_height()),
