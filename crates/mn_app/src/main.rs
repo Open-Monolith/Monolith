@@ -5,157 +5,66 @@ use bevy::{
     window::PrimaryWindow,
 };
 use bevy_egui::{
-    egui, EguiContext, EguiContexts, EguiGlobalSettings, EguiPlugin, EguiPrimaryContextPass,
+    EguiGlobalSettings, EguiPlugin,
     PrimaryEguiContext,
 };
-use egui_dock::{DockArea, DockState, NodeIndex, TabViewer};
+use mn_egui::{MonolithUIPlugin};
+use mn_core::{DockData, Tab};
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.25, 0.25, 0.25)))
         .add_plugins(DefaultPlugins)
         .add_plugins(EguiPlugin::default())
-        .init_resource::<DockData>()
+        .add_plugins(MonolithUIPlugin)
         .add_systems(Startup, setup_system)
-        // 1. Calculate UI layout
-        .add_systems(EguiPrimaryContextPass, ui_system)
-        // 2. Apply viewport to camera (After UI is done)
         .add_systems(PostUpdate, update_viewport_system)
         .run();
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-enum Tab {
-    Viewport,
-    Inspector,
-    Hierarchy,
-    Assets,
-}
 
-#[derive(Resource)]
-struct DockData {
-    dock_state: DockState<Tab>,
-    // Use Option to track if the tab is actually visible
-    viewport_rect: Option<egui::Rect>,
-}
-
-impl Default for DockData {
-    fn default() -> Self {
-        let mut dock_state = DockState::new(vec![Tab::Viewport]);
-        
-        let tree = dock_state.main_surface_mut();
-        let [viewport, _inspector] = tree.split_right(
-            NodeIndex::root(),
-            0.75,
-            vec![Tab::Inspector],
-        );
-        let [_viewport, _hierarchy] = tree.split_left(
-            viewport,
-            0.2,
-            vec![Tab::Hierarchy],
-        );
-
-        Self {
-            dock_state,
-            viewport_rect: None,
-        }
-    }
-}
-
-struct MyTabViewer<'a> {
-    viewport_rect: &'a mut Option<egui::Rect>,
-}
-
-impl TabViewer for MyTabViewer<'_> {
-    type Tab = Tab;
-
-    fn title(&mut self, tab: &mut Self::Tab) -> egui::WidgetText {
-        match tab {
-            Tab::Viewport => "Viewport".into(),
-            Tab::Inspector => "Inspector".into(),
-            Tab::Hierarchy => "Hierarchy".into(),
-            Tab::Assets => "Assets".into(),
-        }
-    }
-
-    fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
-        match tab {
-            Tab::Viewport => {
-                let rect = ui.available_rect_before_wrap();
-                // Reserve space so the layout doesn't collapse
-                ui.allocate_rect(rect, egui::Sense::hover());
-                
-                // Set the rect for this frame
-                *self.viewport_rect = Some(rect);
-                
-                // Draw a placeholder background (optional, but good for debugging)
-                // We use transparent so Bevy shows through, or dark grey to hide glitches
-                ui.painter().rect_filled(
-                    rect,
-                    egui::CornerRadius::ZERO,
-                    egui::Color32::from_black_alpha(0), 
-                );
-            }
-            Tab::Inspector => { ui.heading("Inspector"); }
-            Tab::Hierarchy => { ui.heading("Hierarchy"); }
-            Tab::Assets => { ui.heading("Assets"); }
-        }
-    }
-
-    fn clear_background(&self, tab: &Self::Tab) -> bool {
-        !matches!(tab, Tab::Viewport)
-    }
-}
-
-fn ui_system(
-    mut contexts: EguiContexts,
-    mut dock_data: ResMut<DockData>,
-    window: Single<&mut Window, With<PrimaryWindow>>,
-) {
-    let ctx = contexts.ctx_mut().unwrap();
-    let dock_data = dock_data.into_inner();
-
-    // RESET: Assume tab is hidden at start of frame. 
-    // If MyTabViewer::ui runs for Tab::Viewport, it will set this to Some(rect).
-    dock_data.viewport_rect = None;
-
-    DockArea::new(&mut dock_data.dock_state)
-        .show(ctx, 
-            &mut MyTabViewer {
-                viewport_rect: &mut dock_data.viewport_rect,
-            });
-}
 
 fn update_viewport_system(
     dock_data: Res<DockData>,
     window: Single<&Window, With<PrimaryWindow>>,
-    // Query specifically for the World Camera (not the UI camera)
+    // Query specifically for the World Camera
     mut camera: Single<&mut Camera, (Without<PrimaryEguiContext>, With<Camera2d>)>,
 ) {
-    if let Some(rect) = dock_data.viewport_rect {
+    // 1. Get the CURRENT physical window dimensions
+    let win_width = window.physical_width();
+    let win_height = window.physical_height();
+
+    if let Some((x, y, w, h)) = dock_data.viewport_logical {
         let scale_factor = window.scale_factor();
-        let viewport_pos = rect.left_top().to_vec2() * scale_factor;
-        let viewport_size = rect.size() * scale_factor;
 
-        let physical_position = UVec2::new(viewport_pos.x as u32, viewport_pos.y as u32);
-        let physical_size = UVec2::new(viewport_size.x as u32, viewport_size.y as u32);
+        let phys_x = (x * scale_factor).max(0.0) as u32;
+        let phys_y = (y * scale_factor).max(0.0) as u32;
+        let mut phys_w = (w * scale_factor).max(0.0) as u32;
+        let mut phys_h = (h * scale_factor).max(0.0) as u32;
 
-        if physical_size.x > 0 && physical_size.y > 0 {
+        if phys_x + phys_w > win_width {
+            phys_w = win_width.saturating_sub(phys_x);
+        }
+        if phys_y + phys_h > win_height {
+            phys_h = win_height.saturating_sub(phys_y);
+        }
+
+        if phys_w > 0 && phys_h > 0 {
             camera.viewport = Some(Viewport {
-                physical_position,
-                physical_size,
+                physical_position: UVec2::new(phys_x, phys_y),
+                physical_size: UVec2::new(phys_w, phys_h),
                 ..default()
             });
-            // CRITICAL: Enable camera only when we have a valid target
-            camera.is_active = true; 
+            camera.is_active = true;
             return;
         }
     }
 
-    // CRITICAL: Disable camera if tab is hidden or invalid. 
-    // This prevents it from defaulting to "Fullscreen" and drawing behind the UI.
+    // Disable camera if no valid dock exists
     camera.is_active = false;
 }
+
+
 fn setup_system(
     mut commands: Commands,
     mut egui_global_settings: ResMut<EguiGlobalSettings>,
@@ -201,3 +110,5 @@ fn setup_system(
         RenderLayers::layer(1), // different layer -> won't render world entities on layer 0
     ));
 }
+
+
