@@ -5,6 +5,9 @@ mod viewer;
 mod systems;
 mod dock_state;
 mod widgets;
+mod theme;
+mod resize;
+
 pub struct MonolithUIPlugin;
 
 impl Plugin for MonolithUIPlugin {
