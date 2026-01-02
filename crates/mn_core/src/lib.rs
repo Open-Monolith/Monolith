@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    math::CompassOctant
+};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Tab {
@@ -6,6 +9,15 @@ pub enum Tab {
     Inspector,
     Hierarchy,
     Assets,
+}
+
+#[derive(Message, Clone)]
+pub enum AppWindowCommand {
+    Minimize,
+    ToggleMaximize,
+    Shutdown,
+    StartMove,
+    StartResize(CompassOctant),
 }
 
 #[derive(Resource, Default, Debug)]

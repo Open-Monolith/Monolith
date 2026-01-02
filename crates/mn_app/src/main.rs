@@ -8,8 +8,8 @@ use bevy_egui::{
     EguiGlobalSettings, EguiPlugin,
     PrimaryEguiContext,
 };
-use mn_egui::{AppWindowCommand, MonolithUIPlugin};
-use mn_core::{DockData};
+use mn_egui::{MonolithUIPlugin};
+use mn_core::{AppWindowCommand, DockData};
 
 fn main() {
     App::new()

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_egui::egui;
 
-use crate::AppWindowCommand;
+use mn_core::AppWindowCommand;
 
 pub(crate) fn menu_bar(
     ctx: &egui::Context,

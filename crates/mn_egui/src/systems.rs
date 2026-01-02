@@ -8,7 +8,7 @@ use bevy_egui::{
 };
 use egui_dock::DockArea;
 
-use crate::AppWindowCommand;
+use mn_core::AppWindowCommand;
 use crate::{dock_state::DockStateResource, viewer::MyTabViewer};
 use crate::widgets::{menubar};
 
