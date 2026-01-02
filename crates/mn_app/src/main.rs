@@ -2,27 +2,75 @@ use bevy::{
     camera::{CameraOutputMode, Viewport, visibility::RenderLayers},
     prelude::*,
     render::render_resource::BlendState,
-    window::PrimaryWindow,
+    window::{PrimaryWindow, WindowMode},
 };
 use bevy_egui::{
     EguiGlobalSettings, EguiPlugin,
     PrimaryEguiContext,
 };
-use mn_egui::{MonolithUIPlugin};
-use mn_core::{DockData, Tab};
+use mn_egui::{AppWindowCommand, MonolithUIPlugin};
+use mn_core::{DockData};
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.25, 0.25, 0.25)))
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                title: "Monolith BIM".into(),
+                // This removes the OS title bar and borders
+                decorations: false, 
+                // distinct from "maximized", this centers it nicely on startup
+                position: WindowPosition::Centered(MonitorSelection::Primary), 
+                ..default()
+            }),
+            ..default()
+        }))
         .add_plugins(EguiPlugin::default())
         .add_plugins(MonolithUIPlugin)
         .add_systems(Startup, setup_system)
         .add_systems(PostUpdate, update_viewport_system)
+        .add_systems(Update, windows_control_system)
         .run();
 }
 
+fn windows_control_system(
+    mut reader: MessageReader<AppWindowCommand>, // <- read messages
+    mut app_exit_events: MessageWriter<AppExit>,
+    mut window_query: Query<&mut Window, With<PrimaryWindow>>,
+) {
 
+    let mut window = match window_query.single_mut() {
+        Ok(w) => w,
+        Err(_) => return,
+    };
+
+    for cmd in reader.read() {
+        match cmd {
+            AppWindowCommand::Shutdown => {
+                app_exit_events.write(AppExit::Success);
+            }
+            AppWindowCommand::ToggleMaximize => {
+                if window.mode != WindowMode::Windowed {
+                    window.mode = WindowMode::Windowed;
+                } else {
+                    window.mode = WindowMode::BorderlessFullscreen(bevy::window::MonitorSelection::Primary);
+                }
+            }
+            AppWindowCommand::Minimize => {
+                window.set_minimized(true);        
+            }
+            AppWindowCommand::StartMove => {
+                window.start_drag_move();
+            }
+            AppWindowCommand::StartResize(octant) => {
+                window.mode = WindowMode::Windowed;  
+                window.start_drag_resize(*octant);
+            }
+        }
+    }
+
+
+}
 
 fn update_viewport_system(
     dock_data: Res<DockData>,
@@ -63,6 +111,8 @@ fn update_viewport_system(
     // Disable camera if no valid dock exists
     camera.is_active = false;
 }
+
+
 
 
 fn setup_system(

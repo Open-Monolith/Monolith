@@ -1,3 +1,4 @@
+use bevy::math::CompassOctant;
 use bevy::{
     prelude::*,
     window::PrimaryWindow,
@@ -7,6 +8,7 @@ use bevy_egui::{
 };
 use egui_dock::DockArea;
 
+use crate::AppWindowCommand;
 use crate::{dock_state::DockStateResource, viewer::MyTabViewer};
 use crate::widgets::{menubar};
 
@@ -16,15 +18,19 @@ pub fn ui_system(
     mut dock_state_res: ResMut<DockStateResource>, 
     mut dock_data: ResMut<mn_core::DockData>,
     _window: Single<&mut Window, With<PrimaryWindow>>,
-) {
+    mut appwindow_writer: MessageWriter<AppWindowCommand>, // system param
+    ) {
 
 
     let Ok(ctx) = contexts.ctx_mut() else { return };
-
+    let screen_r = ctx.viewport_rect();
+    if screen_r.width() < 50.0 || screen_r.height() < 50.0 {
+        return;
+    }
     dock_data.clear_frame();
     
     let mut viewport_rect: Option<egui::Rect> = None;
-
+    draw_resize_borders(ctx, &mut appwindow_writer);
 
     egui::TopBottomPanel::top("main_menu_bar")
         .show_separator_line(false)
@@ -36,10 +42,7 @@ pub fn ui_system(
         })
         .show(ctx, |ui| {
             ui.horizontal(|ui| {
-                file_menu(ctx, ui);
-                edit_menu(ctx, ui);
-                window_menu(ctx, ui);
-                view_menu(ctx, ui);
+                menubar::menu_bar(ctx, ui, appwindow_writer)
             });
         });
 
@@ -64,86 +67,61 @@ pub fn hex_to_color(hex: &str) -> egui::Color32 {
     egui::Color32::from_rgb(r, g, b)
 }
 
-fn file_menu(ctx: &egui::Context, ui: &mut egui::Ui) {
-    ui.menu_button("File", |ui| {
-        if ui.button("New Project").clicked() {}
-        if ui.button("Open Project...").clicked() {}
-        ui.menu_button("Open Recent", |ui| {
-            if ui.button("Kahuina.monolith").clicked() {}
-            if ui.button("Uptown_mall.monolith").clicked() {}
-            if ui.button("Launiu Project.monolith").clicked() {}
-        });
-        if ui.button("Save").clicked() {}
-        if ui.button("Save as...").clicked() {}
-        ui.separator();
-        ui.menu_button("Import", |ui| {
-            if ui.button("IFC (.ifc)").clicked() {}
-            if ui.button("glTF / GLB").clicked() {}
-            if ui.button("CAD (.dxf)").clicked() {}
-        });
-        ui.menu_button("Export", |ui| {
-            if ui.button("IFC (.ifc)").clicked() {}
-            if ui.button("Sheet (.pdf)").clicked() {}
-        });
-        ui.separator();
-        if ui.button("Quit").clicked() {
-            ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-        }
-    });
-}
+fn draw_resize_borders(ctx: &egui::Context, writer: &mut MessageWriter<AppWindowCommand>) {
+    let rect = ctx.viewport_rect(); 
+    let thickness = 6.0; 
+    let c_size = 12.0;
 
-fn edit_menu(_ctx: &egui::Context, ui: &mut egui::Ui) {
-    ui.menu_button("Edit", |ui| {
-        if ui.button("Undo (Ctrl + Z)").clicked() {}
-        if ui.button("Redo (Ctrl + Y)").clicked() {}
-        ui.separator();
-        if ui.button("Cut (Ctrl + X)").clicked() {}
-        if ui.button("Copy (Ctrl + C)").clicked() {}
-        if ui.button("Paste (Ctrl + V)").clicked() {}
-        if ui.button("Delete (Del)").clicked() {}
-        ui.separator();
-        ui.menu_button("Select All...", |ui| {
-            if ui.button("in Current View").clicked() {}
-            if ui.button("in Entire Project").clicked() {}
-        });
-        if ui.button("Deselect All (Alt + A)").clicked() {}
-        ui.separator();
-        if ui.button("Commands (Space)").clicked() {}
-        if ui.button("Preferences...").clicked() {}
-    });
-}
+    let mut handle = |id: &'static str, cursor: egui::CursorIcon, area: egui::Rect, octant: CompassOctant| {
+        egui::Area::new(egui::Id::new(id))
+            .fixed_pos(area.left_top())
+            // REMOVED: .fixed_size() (Does not exist on Area)
+            .order(egui::Order::Foreground)
+            .show(ctx, |ui| {
+                let response = ui.allocate_response(area.size(), egui::Sense::drag());
+                
+                if response.hovered() {
+                    ui.ctx().set_cursor_icon(cursor);
+                }
+                
+                // Use .write() as mandated for Bevy 0.17+
+                if response.drag_started() {
+                    writer.write(AppWindowCommand::StartResize(octant));
+                }
+            });
+    };
 
-fn window_menu(_ctx: &egui::Context, ui: &mut egui::Ui) {
-    ui.menu_button("Window", |ui| {
-        ui.menu_button("Workspaces", |ui| {
-            if ui.button("Modeling").clicked() {}
-            if ui.button("Drafting").clicked() {}
-            if ui.button("Forging").clicked() {}
-            if ui.button("Rendering").clicked() {}
-            if ui.button("Scripting").clicked() {}
-            if ui.button("Collaboration").clicked() {}
-        });
-        ui.separator();
-        if ui.button("Scene View").clicked() {}
-        if ui.button("Properties").clicked() {}
-        if ui.button("File Explorer").clicked() {}
-        if ui.button("Scripting").clicked() {}
-        if ui.button("Asset Browser").clicked() {}
-        if ui.button("Console").clicked() {}
-        ui.separator();
-        if ui.button("Toggle Fullscreen (F11)").clicked() {}
-        if ui.button("Reset Layout").clicked() {}
-    });
-}
+    // --- 1. SIDES ---
+    handle("n", egui::CursorIcon::ResizeNorth, 
+        egui::Rect::from_min_size(rect.min, egui::vec2(rect.width(), thickness)), 
+        CompassOctant::North);
+        
+    handle("s", egui::CursorIcon::ResizeSouth, 
+        egui::Rect::from_min_size(egui::pos2(rect.min.x, rect.max.y - thickness), egui::vec2(rect.width(), thickness)), 
+        CompassOctant::South);
 
-fn view_menu(_ctx: &egui::Context, ui: &mut egui::Ui) {
-    ui.menu_button("View", |ui| {
-        if ui.button("Documentation").clicked() {}
-        if ui.button("Keyboard Shortcuts").clicked() {}
-        if ui.button("Report a Bug").clicked() {}
-        if ui.button("Community").clicked() {}
-        ui.separator();
-        if ui.button("Developer Tools").clicked() {}
-        if ui.button("About Monolith").clicked() {}
-    });
+    handle("w", egui::CursorIcon::ResizeWest, 
+        egui::Rect::from_min_size(rect.min, egui::vec2(thickness, rect.height())), 
+        CompassOctant::West);
+
+    handle("e", egui::CursorIcon::ResizeEast, 
+        egui::Rect::from_min_size(egui::pos2(rect.max.x - thickness, rect.min.y), egui::vec2(thickness, rect.height())), 
+        CompassOctant::East);
+
+    // --- 2. CORNERS ---
+    handle("nw", egui::CursorIcon::ResizeNorthWest, 
+        egui::Rect::from_min_size(rect.min, egui::vec2(c_size, c_size)), 
+        CompassOctant::NorthWest);
+
+    handle("ne", egui::CursorIcon::ResizeNorthEast, 
+        egui::Rect::from_min_size(egui::pos2(rect.max.x - c_size, rect.min.y), egui::vec2(c_size, c_size)), 
+        CompassOctant::NorthEast);
+
+    handle("sw", egui::CursorIcon::ResizeSouthWest, 
+        egui::Rect::from_min_size(egui::pos2(rect.min.x, rect.max.y - c_size), egui::vec2(c_size, c_size)), 
+        CompassOctant::SouthWest);
+
+    handle("se", egui::CursorIcon::ResizeSouthEast, 
+        egui::Rect::from_min_size(egui::pos2(rect.max.x - c_size, rect.max.y - c_size), egui::vec2(c_size, c_size)), 
+        CompassOctant::SouthEast);
 }

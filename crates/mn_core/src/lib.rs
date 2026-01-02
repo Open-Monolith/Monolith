@@ -1,6 +1,4 @@
 use bevy::prelude::*;
-use egui_dock::{DockState, NodeIndex};
-use bevy_egui::{egui};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Tab {

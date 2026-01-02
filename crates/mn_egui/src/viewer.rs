@@ -24,6 +24,7 @@ impl TabViewer for MyTabViewer<'_> {
         match tab {
             Tab::Viewport => {
                 let rect = ui.available_rect_before_wrap();
+                if rect.width() < 0.0 && rect.height() < 0.0 { return } 
                 // Reserve space so the layout doesn't collapse
                 ui.allocate_rect(rect, egui::Sense::hover());
                 
