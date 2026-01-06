@@ -1,7 +1,8 @@
 use bevy_egui::egui::{self, Rect};
 use egui_dock::TabViewer;
 
-use mn_core::Tab;
+use mn_core::{MonoTab, TabKind, ALL_TAB_KINDS};
+use crate::tabs;
 
 pub struct MyTabViewer<'a> {
     // This is a small buffer owned by the UI crate for this frame.
@@ -9,20 +10,33 @@ pub struct MyTabViewer<'a> {
 }
 
 impl TabViewer for MyTabViewer<'_> {
-    type Tab = Tab;
+    type Tab = MonoTab;
+
+    fn id(&mut self, tab: &mut Self::Tab) -> egui::Id {
+        egui::Id::new(tab.id)
+    }
 
     fn title(&mut self, tab: &mut Self::Tab) -> egui::WidgetText {
-        match tab {
-            Tab::Viewport => "Viewport".into(),
-            Tab::Inspector => "Inspector".into(),
-            Tab::Hierarchy => "Hierarchy".into(),
-            Tab::Assets => "Assets".into(),
-        }
+        format!("{:?}", tab.kind).into()
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
-        match tab {
-            Tab::Viewport => {
+
+        egui::ComboBox::from_id_salt("tab_kind_selector")
+            .selected_text(format!("{:?}", tab.kind))
+            .show_ui(ui, |ui| {
+                for kind in ALL_TAB_KINDS {
+                    if ui
+                        .selectable_value(&mut tab.kind, kind.clone(), format!("{:?}", kind))
+                        .clicked()
+                    {
+                        tab.title = format!("{:?}", kind);
+                    }
+                }
+            });
+
+        match tab.kind {
+            TabKind::Viewport => {
                 let rect = ui.available_rect_before_wrap();
                 if rect.width() < 0.0 && rect.height() < 0.0 { return } 
                 // Reserve space so the layout doesn't collapse
@@ -39,13 +53,19 @@ impl TabViewer for MyTabViewer<'_> {
                     egui::Color32::from_black_alpha(0), 
                 );
             }
-            Tab::Inspector => { ui.heading("Inspector"); }
-            Tab::Hierarchy => { ui.heading("Hierarchy"); }
-            Tab::Assets => { ui.heading("Assets"); }
+            TabKind::Explorer => {
+                tabs::explorer::show(ui, tab);
+            }
+            TabKind::Console => {
+                tabs::console::show(ui, tab);
+            }
+            TabKind::Properties => {
+                tabs::properties::show(ui, tab);
+            }
         }
     }
 
     fn clear_background(&self, tab: &Self::Tab) -> bool {
-        !matches!(tab, Tab::Viewport)
+        !matches!(tab.kind, TabKind::Viewport)
     }
 }

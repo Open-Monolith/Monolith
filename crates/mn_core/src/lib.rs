@@ -1,15 +1,29 @@
 use bevy::{
-    prelude::*,
-    math::CompassOctant
+    math::CompassOctant, platform::collections::HashMap, prelude::*
 };
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum Tab {
+pub enum TabKind {
     Viewport,
-    Inspector,
-    Hierarchy,
-    Assets,
+    Explorer,
+    Properties,
+    Console,
 }
+
+pub struct MonoTab {
+    pub kind: TabKind,
+    pub title: String,
+    pub id: u32,
+}
+
+pub const ALL_TAB_KINDS: [TabKind; 4] = [
+    TabKind::Viewport,
+    TabKind::Explorer,
+    TabKind::Properties,
+    TabKind::Console,
+];
+
+
 
 #[derive(Message, Clone)]
 pub enum AppWindowCommand {
@@ -23,6 +37,7 @@ pub enum AppWindowCommand {
 #[derive(Resource, Default, Debug)]
 pub struct DockData {
     pub viewport_logical: Option<(f32, f32, f32, f32)>,
+    pub viewports: HashMap<u32, (f32, f32, f32, f32)>,
 }
 
 impl DockData {

@@ -7,6 +7,7 @@ mod dock_state;
 mod widgets;
 mod theme;
 mod resize;
+mod tabs;
 
 pub struct MonolithUIPlugin;
 
