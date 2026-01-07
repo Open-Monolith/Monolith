@@ -1,3 +1,4 @@
+use bevy::platform::collections::HashMap;
 use bevy_egui::egui::{self, Rect};
 use egui_dock::TabViewer;
 
@@ -5,8 +6,8 @@ use mn_core::{MonoTab, TabKind, ALL_TAB_KINDS};
 use crate::tabs;
 
 pub struct MyTabViewer<'a> {
-    // This is a small buffer owned by the UI crate for this frame.
-    pub viewport_out: &'a mut Option<Rect>,
+    // CHANGED: Store a map of ID -> Rect
+    pub viewports: &'a mut HashMap<u32, Rect>,
 }
 
 impl TabViewer for MyTabViewer<'_> {
@@ -42,8 +43,10 @@ impl TabViewer for MyTabViewer<'_> {
                 // Reserve space so the layout doesn't collapse
                 ui.allocate_rect(rect, egui::Sense::hover());
                 
-                // Set the rect for this frame
-                *self.viewport_out = Some(rect);
+                self.viewports.insert(tab.id, rect);
+
+                // // Set the rect for this frame
+                // *self.viewport_out = Some(rect);
                 
                 // Draw a placeholder background (optional, but good for debugging)
                 // We use transparent so Bevy shows through, or dark grey to hide glitches

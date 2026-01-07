@@ -2,9 +2,12 @@ use bevy::{
     prelude::*,
     window::PrimaryWindow,
 };
+use bevy::platform::collections::HashMap;
 use bevy_egui::{
-    egui, EguiContexts,
+    egui, egui::{Rect}, EguiContexts, 
 };
+
+
 use egui_dock::DockArea;
 
 use mn_core::AppWindowCommand;
@@ -21,8 +24,7 @@ pub fn ui_system(
     mut appwindow_writer: MessageWriter<AppWindowCommand>, // system param
     ) {
     
-    
-    
+    // Safe Guards
     let Ok(ctx) = contexts.ctx_mut() else { return };
     let screen_r = ctx.viewport_rect();
     if screen_r.width() < 50.0 || screen_r.height() < 50.0 {
@@ -30,12 +32,14 @@ pub fn ui_system(
     }
     dock_data.clear_frame();
     
-    let mut viewport_rect: Option<egui::Rect> = None;
-    
+    // let mut viewport_rect: Option<egui::Rect> = None;
+    // Windows
     draw_resize_borders(ctx, &mut appwindow_writer);
-        
+
+    // Visuals
     ctx.set_visuals(egui::Visuals::dark());
     let theme: Theme = Theme::from_ctx(ctx);
+    let style = get_dock_style(ctx, &theme);
 
     egui::TopBottomPanel::top("main_menu_bar")
         .show_separator_line(false)
@@ -57,20 +61,23 @@ pub fn ui_system(
             });
         });
 
-    let style = get_dock_style(ctx, &theme);
+    // Create viewer with the map
+    let mut visible_viewports: HashMap<u32, Rect> = HashMap::new();
+
+    let mut viewer = MyTabViewer {
+        viewports: &mut visible_viewports,
+    };
     DockArea::new(&mut dock_state_res.dock_state)
         .style(style)
         .show_leaf_collapse_buttons(false)
         .show_close_buttons(false)
         .show_leaf_close_all_buttons(false)
-        .show(ctx, 
-            &mut MyTabViewer {
-                viewport_out: &mut viewport_rect
-            });
+        .show(ctx, &mut viewer);
     
-    if let Some(rect) = viewport_rect {
-        let lt = rect.left_top();
-        let sz = rect.size();
-        dock_data.set_viewport_from_logical((lt.x, lt.y), (sz.x, sz.y));
+    for (id, rect) in visible_viewports {
+        dock_data.viewports.insert(
+            id,
+            (rect.min.x, rect.min.y, rect.width(), rect.height())
+        );
     }
 }
