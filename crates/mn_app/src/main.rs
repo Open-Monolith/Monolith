@@ -4,15 +4,14 @@ use bevy::{
     render::render_resource::BlendState,
     window::{PrimaryWindow, WindowMode, WindowPosition, MonitorSelection},
     mesh::Mesh3d,
+    platform::collections::HashMap
 };
 use bevy::pbr::{StandardMaterial, MeshMaterial3d};
-
 use bevy_egui::{EguiGlobalSettings, EguiPlugin, PrimaryEguiContext};
 
 use mn_core::{AppWindowCommand, DockData}; // project-local: I could not validate these
-use mn_ui::MonolithUIPlugin; // project-local
 
-use std::collections::{HashMap as stdHashMap, HashSet};
+use std::collections::HashSet;
 
 #[derive(Component)]
 struct TabViewportCamera {
@@ -33,8 +32,9 @@ fn main() {
                 ..default()
             })
         )
+        .add_plugins(mn_ui::icons::IconsPlugin)
         .add_plugins(EguiPlugin::default())
-        .add_plugins(MonolithUIPlugin)
+        .add_plugins(mn_ui::MonolithUIPlugin)
         .add_systems(Startup, setup_system)
         .add_systems(PostUpdate, update_viewport_system)
         .add_systems(Update, windows_control_system)
@@ -124,7 +124,7 @@ fn update_viewport_system(
     mut camera_query: Query<&mut Camera>,
 ) {
     // Build a map of existing tab_id -> entity
-    let mut existing_map: stdHashMap<u32, Entity> = stdHashMap::new();
+    let mut existing_map: HashMap<u32, Entity> = HashMap::new();
     for (entity, tag) in existing_tagged.iter() {
         existing_map.insert(tag.tab_id, entity);
     }

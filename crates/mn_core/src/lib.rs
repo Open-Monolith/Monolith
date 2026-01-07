@@ -2,6 +2,8 @@ use bevy::{
     math::CompassOctant, platform::collections::HashMap, prelude::*
 };
 
+pub mod icons;
+
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TabKind {
     Viewport,

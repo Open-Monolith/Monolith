@@ -1,6 +1,6 @@
 # Monolith
 
-**Monolith** is an under development phigh-performance, open-source BIM platform engineered in Rust to obliterate the single-core bottlenecks of 90s-era legacy software. Powered by a multi-threaded, GPU-accelerated database engine, it consolidates the fragmented workflow of Revit, Navisworks, and Excel into a single, unified environment for real-time 3D design, 4D scheduling, and 5D cost estimation.
+**Monolith** is an under development high-performance, open-source BIM platform engineered in Rust to obliterate the single-core bottlenecks of 90s-era legacy software. Powered by a multi-threaded, GPU-accelerated database engine, it consolidates the fragmented workflow of Revit, Navisworks, and Excel into a single, unified environment for real-time 3D design, 4D scheduling, and 5D cost estimation.
 
 **End Goal**: Modernize the BIM Software used in the industry
 
@@ -12,7 +12,7 @@
 
 The current objective is to build an MVP with the ff features
 
-- Functional Window with 3D Viewport
+- Functional Window with 3D Viewport ✅
 
 - Grid System
 

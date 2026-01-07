@@ -1,12 +1,15 @@
 use bevy::prelude::*;
 use bevy_egui::egui;
+use bevy::platform::collections::HashMap;
 
-use mn_core::AppWindowCommand;
+use mn_core::{AppWindowCommand, icons::Icon};
+use bevy_egui::egui::{Button, vec2};
 
 pub(crate) fn menu_bar(
     ctx: &egui::Context,
     ui: &mut egui::Ui,
-    mut appwindow_writer: MessageWriter<AppWindowCommand>
+    mut appwindow_writer: MessageWriter<AppWindowCommand>,
+    icon_textures: HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>
 ) -> egui::InnerResponse<()> {
     egui::MenuBar::new().ui(ui, |ui| {
 
@@ -35,7 +38,7 @@ pub(crate) fn menu_bar(
 
 
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-            window_controls(ctx, ui, &mut appwindow_writer);
+            window_controls(ctx, ui, &mut appwindow_writer, icon_textures);
             // search_bar(app, ui);
             // topbar_resize(ctx, ui);
         });
@@ -143,19 +146,26 @@ fn workspace_buttons(ui: &mut egui::Ui) {
 fn window_controls(
     _ctx: &egui::Context,
     ui: &mut egui::Ui,
-    appwindow_writer: &mut MessageWriter<AppWindowCommand>,) {
+    appwindow_writer: &mut MessageWriter<AppWindowCommand>,
+    icon_textures: HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>
+) {
+    ui.scope(|ui| {
+        ui.style_mut().spacing.button_padding = egui::vec2(3.0, 3.0); 
+        let image_size = egui::vec2(12.0, 12.0);
+        
+        // Close
+        if ui.add(egui::Button::image((icon_textures[&Icon::WindowClose], image_size))).clicked() {
+            appwindow_writer.write(AppWindowCommand::Shutdown);
+        }
 
-    if ui.button("❌").clicked() {
-        appwindow_writer.write(AppWindowCommand::Shutdown);
-        // ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-    }
-    // if is_maximized { "🗗" } else { "🗖" }
-    if ui.button("🗖" ).clicked() {
-        appwindow_writer.write(AppWindowCommand::ToggleMaximize);
-    }
+        // Maximize
+        if ui.add(egui::Button::image((icon_textures[&Icon::WindowMaximize], image_size))).clicked() {
+            appwindow_writer.write(AppWindowCommand::ToggleMaximize);
+        }
 
-
-    if ui.button("🗕").clicked() {
-        appwindow_writer.write(AppWindowCommand::Minimize);
-    }
+        // Minimize
+        if ui.add(egui::Button::image((icon_textures[&Icon::WindowMinimize], image_size))).clicked() {
+            appwindow_writer.write(AppWindowCommand::Minimize);
+        }
+    });
 }

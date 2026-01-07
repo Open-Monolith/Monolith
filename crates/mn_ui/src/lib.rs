@@ -8,6 +8,7 @@ mod widgets;
 mod theme;
 mod resize;
 mod tabs;
+pub mod icons;
 
 pub struct MonolithUIPlugin;
 
