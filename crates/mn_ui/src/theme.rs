@@ -1,5 +1,5 @@
 use bevy_egui::{
-    EguiContext, EguiContexts, egui::{self, Context, FontData, FontFamily}
+    EguiContexts, egui::{self, FontData, FontFamily}
 };
 use egui_dock::Style;
 
@@ -86,7 +86,7 @@ pub fn hex_to_color(hex: &str) -> egui::Color32 {
 }
 
 pub fn setup_fonts(ctx: &mut bevy_egui::egui::Context) {
-    let mut fonts = egui::FontDefinitions::default();
+    let mut fonts: egui::FontDefinitions = egui::FontDefinitions::default();
     const FONT_NAME: &str = "Inter";
 
     fonts.font_data.insert(
