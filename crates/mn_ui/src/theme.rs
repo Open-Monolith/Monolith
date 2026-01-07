@@ -1,7 +1,5 @@
-use eframe::egui;
+use bevy_egui::{egui};
 use egui_dock::Style;
-
-
 
 pub struct Theme {
     pub bg: egui::Color32,
@@ -18,8 +16,8 @@ impl Theme {
 
     pub fn light() -> Self {
         Self {
-            bg: hex_to_color("#E0E0E0"),
-            panel: hex_to_color("#FFFFFF"),
+            bg: hex_to_color("#FFFFFF"),
+            panel: hex_to_color("#E0E0E0"),
         }
     }
 
@@ -42,10 +40,12 @@ pub fn get_dock_style(ctx: &egui::Context, theme: &Theme) -> Style {
     style.separator.color_idle = theme.bg;
     style.separator.color_hovered = theme.bg;
     style.separator.color_dragged = theme.bg;
-
+    style.tab_bar.bg_fill = theme.panel;
+    
     // Tab
     style.tab.tab_body.stroke = egui::Stroke::NONE;
-
+    style.tab_bar.corner_radius = egui::CornerRadius::ZERO;
+    style.tab.tab_body.corner_radius = egui::CornerRadius::ZERO;
     // Tab Outline
     style.tab.active.outline_color = egui::Color32::TRANSPARENT;
     style.tab.inactive.outline_color = egui::Color32::TRANSPARENT;
@@ -54,7 +54,8 @@ pub fn get_dock_style(ctx: &egui::Context, theme: &Theme) -> Style {
     style.tab.active_with_kb_focus.outline_color = egui::Color32::TRANSPARENT;
     style.tab.inactive_with_kb_focus.outline_color = egui::Color32::TRANSPARENT;
     style.tab.focused_with_kb_focus.outline_color = egui::Color32::TRANSPARENT;
-
+    style.tab_bar.hline_color = egui::Color32::TRANSPARENT;
+    
     // Tab BG
     style.tab.active.bg_fill = theme.panel;
     style.tab.inactive.bg_fill = theme.panel;
@@ -68,7 +69,7 @@ pub fn get_dock_style(ctx: &egui::Context, theme: &Theme) -> Style {
 }
 
 pub fn hex_to_color(hex: &str) -> egui::Color32 {
-    let hex = hex.trim_start_matches('#');
+    let hex: &str = hex.trim_start_matches('#');
     let r = u8::from_str_radix(&hex[0..2], 16).unwrap_or(0);
     let g = u8::from_str_radix(&hex[2..4], 16).unwrap_or(0);
     let b = u8::from_str_radix(&hex[4..6], 16).unwrap_or(0);

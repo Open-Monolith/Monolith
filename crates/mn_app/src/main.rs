@@ -10,7 +10,7 @@ use bevy::pbr::{StandardMaterial, MeshMaterial3d};
 use bevy_egui::{EguiGlobalSettings, EguiPlugin, PrimaryEguiContext};
 
 use mn_core::{AppWindowCommand, DockData}; // project-local: I could not validate these
-use mn_egui::MonolithUIPlugin; // project-local
+use mn_ui::MonolithUIPlugin; // project-local
 
 use std::collections::{HashMap as stdHashMap, HashSet};
 

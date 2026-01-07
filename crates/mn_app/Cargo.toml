@@ -8,7 +8,7 @@ bevy = "0.17.3"
 bevy_egui = "0.38.1"
 egui_dock = "0.18.0"
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
-mn_egui = { path = "../mn_egui"}
+mn_ui = { path = "../mn_ui"}
 mn_core = { path = "../mn_core"}
 wgpu-types = "28.0.0"
 

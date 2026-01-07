@@ -4,7 +4,9 @@
 
 **End Goal**: Modernize the BIM Software used in the industry
 
+# Run
 
+`cargo run -p mn_app`
 
 # Progress
 
@@ -21,8 +23,6 @@ The current objective is to build an MVP with the ff features
 - Functioning sqlite/duckdb integration
 
 - PDF Creation
-
-
 
 # Planned Features
 

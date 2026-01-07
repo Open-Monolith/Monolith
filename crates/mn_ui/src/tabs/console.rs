@@ -1,6 +1,6 @@
-use eframe::egui;
-use crate::docktabs::{MyTab};
+use bevy_egui::egui;
+use mn_core::MonoTab;
 
-pub fn show(ui: &mut egui::Ui, tab: &mut MyTab) {
+pub fn show(ui: &mut egui::Ui, tab: &mut MonoTab) {
     ui.label(format!("Tab title is {}", tab.title));
 }

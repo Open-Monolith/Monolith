@@ -1,8 +1,27 @@
-use crate::app::MyApp;
-use eframe::egui;
+use bevy::prelude::*;
+use bevy_egui::egui;
 
-pub(crate) fn menu_bar(app: &mut MyApp, ctx: &egui::Context, ui: &mut egui::Ui) -> egui::InnerResponse<()> {
+use mn_core::AppWindowCommand;
+
+pub(crate) fn menu_bar(
+    ctx: &egui::Context,
+    ui: &mut egui::Ui,
+    mut appwindow_writer: MessageWriter<AppWindowCommand>
+) -> egui::InnerResponse<()> {
     egui::MenuBar::new().ui(ui, |ui| {
+
+
+        let drag_interaction = ui.interact(
+            ui.max_rect(), 
+            ui.id().with("window_drag_handle"), // Unique ID for this interactor
+            egui::Sense::drag()
+        );
+
+        // If a drag starts here (and wasn't captured by a button above), send the command.
+        if drag_interaction.drag_started() {
+            appwindow_writer.write(AppWindowCommand::StartMove);
+        }
+
         file_menu(ctx, ui);
         edit_menu(ctx, ui);
         window_menu(ctx, ui);
@@ -12,11 +31,16 @@ pub(crate) fn menu_bar(app: &mut MyApp, ctx: &egui::Context, ui: &mut egui::Ui) 
 
         workspace_buttons(ui);
 
+
+
+
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-            window_controls(ctx, ui);
-            search_bar(app, ui);
-            topbar_resize(ctx, ui);
+            window_controls(ctx, ui, &mut appwindow_writer);
+            // search_bar(app, ui);
+            // topbar_resize(ctx, ui);
         });
+
+
     })
 }
 
@@ -116,58 +140,22 @@ fn workspace_buttons(ui: &mut egui::Ui) {
     });
 }
 
-fn search_bar(app: &mut MyApp, ui: &mut egui::Ui) {
-    egui::Frame::NONE
-        .fill(egui::Color32::from_hex("#252525").unwrap())
-        .corner_radius(egui::CornerRadius::same(4))
-        .inner_margin(egui::Margin::symmetric(6, 3))
-        .stroke(egui::Stroke::NONE)
-        .show(ui, |ui| {
-            ui.horizontal(|ui| {
-                ui.add(
-                    egui::TextEdit::singleline(&mut app.search_text)
-                        .frame(false)
-                        .hint_text("Search...")
-                        .desired_width(150.0)
-                        .text_color(egui::Color32::LIGHT_GRAY),
-                );
-                ui.label(egui::RichText::new("🔍").color(egui::Color32::GRAY));
-            });
-        });
-}
-
-fn window_controls(ctx: &egui::Context, ui: &mut egui::Ui) {
-    let is_maximized = ctx.input(|i| i.viewport().maximized.unwrap_or(false));
+fn window_controls(
+    _ctx: &egui::Context,
+    ui: &mut egui::Ui,
+    appwindow_writer: &mut MessageWriter<AppWindowCommand>,) {
 
     if ui.button("❌").clicked() {
-        ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+        appwindow_writer.write(AppWindowCommand::Shutdown);
+        // ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+    }
+    // if is_maximized { "🗗" } else { "🗖" }
+    if ui.button("🗖" ).clicked() {
+        appwindow_writer.write(AppWindowCommand::ToggleMaximize);
     }
 
-    if ui.button(if is_maximized { "🗗" } else { "🗖" }).clicked() {
-        ctx.send_viewport_cmd(egui::ViewportCommand::Maximized(!is_maximized));
-    }
 
     if ui.button("🗕").clicked() {
-        ctx.send_viewport_cmd(egui::ViewportCommand::Minimized(true));
-    }
-}
-
-fn topbar_resize(ctx: &egui::Context, ui: &mut egui::Ui) {
-    let available_width = ui.available_width();
-    
-    if available_width > 0.0 {
-        let (_rect, response) = ui.allocate_exact_size(
-            egui::vec2(available_width, ui.available_height()),
-            egui::Sense::click_and_drag(),
-        );
-
-        if response.double_clicked() {
-            let is_maximized = ctx.input(|i| i.viewport().maximized.unwrap_or(false));
-            ctx.send_viewport_cmd(egui::ViewportCommand::Maximized(!is_maximized));
-        }
-
-        if response.dragged() {
-            ctx.send_viewport_cmd(egui::ViewportCommand::StartDrag);
-        }
+        appwindow_writer.write(AppWindowCommand::Minimize);
     }
 }
