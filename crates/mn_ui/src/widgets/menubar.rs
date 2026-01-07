@@ -1,23 +1,20 @@
 use bevy::prelude::*;
-use bevy_egui::egui;
 use bevy::platform::collections::HashMap;
+use bevy_egui::egui;
 
 use mn_core::{AppWindowCommand, icons::Icon};
-use bevy_egui::egui::{Button, vec2};
 
 pub(crate) fn menu_bar(
     ctx: &egui::Context,
     ui: &mut egui::Ui,
     mut appwindow_writer: MessageWriter<AppWindowCommand>,
-    icon_textures: HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>
+    icon_textures: HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>,
 ) -> egui::InnerResponse<()> {
     egui::MenuBar::new().ui(ui, |ui| {
-
-
         let drag_interaction = ui.interact(
-            ui.max_rect(), 
+            ui.max_rect(),
             ui.id().with("window_drag_handle"), // Unique ID for this interactor
-            egui::Sense::drag()
+            egui::Sense::drag(),
         );
 
         // If a drag starts here (and wasn't captured by a button above), send the command.
@@ -34,16 +31,11 @@ pub(crate) fn menu_bar(
 
         workspace_buttons(ui);
 
-
-
-
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             window_controls(ctx, ui, &mut appwindow_writer, icon_textures);
             // search_bar(app, ui);
             // topbar_resize(ctx, ui);
         });
-
-
     })
 }
 
@@ -142,6 +134,7 @@ fn workspace_buttons(ui: &mut egui::Ui) {
         if ui.button("Collaboration").clicked() {}
     });
 }
+
 
 fn window_controls(
     _ctx: &egui::Context,

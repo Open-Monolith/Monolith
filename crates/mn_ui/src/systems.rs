@@ -20,42 +20,23 @@ pub fn ui_system(
     mut dock_state_res: ResMut<DockStateResource>, 
     mut dock_data: ResMut<mn_core::DockData>,
     _window: Single<&mut Window, With<PrimaryWindow>>,
-    mut appwindow_writer: MessageWriter<AppWindowCommand>, // system param
-    icons: Res<mn_core::icons::Icons>,
+    mut appwindow_writer: MessageWriter<AppWindowCommand>,
+    icon_textures: ResMut<mn_core::icons::IconTextures>,
     ) {
-    
-    // Early checks using ctx, but keep the borrow small:
-    {
-
-        let Ok(ctx) = contexts.ctx_mut() else { return };
-        let screen_r = ctx.viewport_rect();
-        if screen_r.width() < 50.0 || screen_r.height() < 50.0 {
-            return;
-        }
-        dock_data.clear_frame();
+    // Safe guards
+    let Ok(ctx) = contexts.ctx_mut() else { return };
+    let screen_r = ctx.viewport_rect();
+    if screen_r.width() < 50.0 || screen_r.height() < 50.0 {
+        return;
     }
+    dock_data.clear_frame();
 
-    // Icons
-    let mut icon_textures: HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId> = HashMap::new();
-    
-    for (icon, handle) in icons.handles.iter() {
-        icon_textures.insert(
-            *icon,
-            contexts.add_image(
-                bevy_egui::EguiTextureHandle::Strong(handle.clone())
-            ));
-    }
-
-    // Re-acquire ctx for UI rendering later:
-    let Ok(ctx) = contexts.ctx_mut() else { return; };
-    
     // Windows
     draw_resize_borders(ctx, &mut appwindow_writer);
 
     // Visuals
-    ctx.set_visuals(egui::Visuals::dark());
     let theme: Theme = Theme::from_ctx(ctx);
-    let style = get_dock_style(ctx, &theme);
+    let textures = icon_textures.textures.clone();
 
     // Menubar
     egui::TopBottomPanel::top("main_menu_bar")
@@ -68,7 +49,7 @@ pub fn ui_system(
         })
         .show(ctx, |ui| {
             ui.horizontal(|ui| {
-                menubar::menu_bar(ctx, ui, appwindow_writer, icon_textures)
+                menubar::menu_bar(ctx, ui, appwindow_writer, textures)
             });
         });
 
@@ -79,7 +60,7 @@ pub fn ui_system(
         viewports: &mut visible_viewports,
     };
     DockArea::new(&mut dock_state_res.dock_state)
-        .style(style)
+        .style(get_dock_style(ctx, &theme))
         .show_leaf_collapse_buttons(false)
         .show_close_buttons(false)
         .show_leaf_close_all_buttons(false)

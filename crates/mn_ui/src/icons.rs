@@ -1,24 +1,19 @@
 use bevy::{
     prelude::*,
 };
-use bevy::platform::collections::HashMap;
-use mn_core::icons::{ICON_PATHS, Icon, Icons};
+use bevy_egui::EguiContexts;
+use bevy_egui::egui::TextureId;
 
-pub struct IconsPlugin;
-
-impl Plugin for IconsPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Startup, load_icons);
+pub fn setup_icon_textures(
+    mut contexts: EguiContexts,
+    mut icon_textures: ResMut<mn_core::icons::IconTextures>,
+    asset_server: Res<AssetServer>
+) {
+    // Add each icon image to egui once and cache the texture ID
+    for (icon, path) in mn_core::icons::ICON_PATHS.iter() {
+        let texture_id: TextureId = contexts.add_image(
+            bevy_egui::EguiTextureHandle::Strong(asset_server.load(*path))
+        );
+        icon_textures.textures.insert(*icon, texture_id);
     }
-}
-
-fn load_icons(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let mut map: HashMap<Icon, Handle<Image>> = HashMap::new();
-    
-    for (icon, path) in ICON_PATHS.iter() {
-        map.insert(*icon, asset_server.load(*path));
-    }
-
-    commands.insert_resource(Icons { handles: map});
-
 }

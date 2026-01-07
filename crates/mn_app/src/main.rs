@@ -32,7 +32,6 @@ fn main() {
                 ..default()
             })
         )
-        .add_plugins(mn_ui::icons::IconsPlugin)
         .add_plugins(EguiPlugin::default())
         .add_plugins(mn_ui::MonolithUIPlugin)
         .add_systems(Startup, setup_system)

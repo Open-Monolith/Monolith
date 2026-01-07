@@ -19,6 +19,11 @@ impl Plugin for MonolithUIPlugin {
         app.add_message::<mn_core::AppWindowCommand>()
            .init_resource::<DockStateResource>()
            .init_resource::<mn_core::DockData>()
+           .init_resource::<mn_core::icons::IconTextures>()
+           .add_systems(Startup, (
+                theme::configure_theme,
+                icons::setup_icon_textures
+           ))
            .add_systems(bevy_egui::EguiPrimaryContextPass, systems::ui_system);
     }
 }
