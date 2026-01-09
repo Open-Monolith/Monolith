@@ -3,11 +3,13 @@ use bevy_egui::egui::{self, Rect};
 use egui_dock::TabViewer;
 
 use mn_core::{MonoTab, TabKind, ALL_TAB_KINDS};
-use crate::tabs;
+use crate::{tabs, theme::Theme};
 
 pub struct MyTabViewer<'a> {
     // CHANGED: Store a map of ID -> Rect
     pub viewports: &'a mut HashMap<u32, Rect>,
+    pub icon_textures: &'a HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>,
+    pub theme: &'a Theme,
 }
 
 impl TabViewer for MyTabViewer<'_> {
@@ -47,7 +49,7 @@ impl TabViewer for MyTabViewer<'_> {
                 tabs::console::show(ui, tab);
             }
             TabKind::Properties => {
-                tabs::properties::show(ui, tab);
+                tabs::properties::show(ui, tab, self.icon_textures, self.theme);
             }
         }
     }

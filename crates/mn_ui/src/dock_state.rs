@@ -34,8 +34,8 @@ impl Default for DockStateResource {
         };
 
         let tab1 = next_tab(TabKind::Viewport);
-        let tab2 = next_tab(TabKind::Explorer);
-        let tab3 = next_tab(TabKind::Properties);
+        let tab2 = next_tab(TabKind::Properties);
+        let tab3 = next_tab(TabKind::Explorer);
 
         let mut dock_state = DockState::new(vec![tab1]);
         

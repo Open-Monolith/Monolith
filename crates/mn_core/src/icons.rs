@@ -12,6 +12,11 @@ pub enum Icon {
     WindowClose,
     WindowMaximize,
     WindowMinimize,
+
+    TabPropertyView,
+    TabPropertyGraphics,
+    TabPropertyExport,
+    TabPropertyTools,
 }
 
 pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| {
@@ -19,6 +24,12 @@ pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| 
         (Icon::WindowClose, "ui/icons/windows_controls/close/close_dark.png"),
         (Icon::WindowMinimize, "ui/icons/windows_controls/minimize/minimize_dark.png"),
         (Icon::WindowMaximize, "ui/icons/windows_controls/maximize/maximize_dark.png"),
+
+        (Icon::TabPropertyView, "ui/icons/tab_properties/export/export_dark.png"),
+        (Icon::TabPropertyGraphics, "ui/icons/tab_properties/graphic/graphic_dark.png"),
+        (Icon::TabPropertyExport, "ui/icons/tab_properties/tool/tool_dark.png"),
+        (Icon::TabPropertyTools, "ui/icons/tab_properties/view/view_dark.png"),
+
     ])
 });
 

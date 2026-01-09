@@ -49,7 +49,7 @@ pub fn ui_system(
         })
         .show(ctx, |ui| {
             ui.horizontal(|ui| {
-                menubar::menu_bar(ctx, ui, appwindow_writer, textures)
+                menubar::menu_bar(ctx, ui, appwindow_writer, &textures)
             });
         });
 
@@ -58,6 +58,8 @@ pub fn ui_system(
 
     let mut viewer = MyTabViewer {
         viewports: &mut visible_viewports,
+        icon_textures: &textures,
+        theme: &theme
     };
     DockArea::new(&mut dock_state_res.dock_state)
         .style(get_dock_style(ctx, &theme))

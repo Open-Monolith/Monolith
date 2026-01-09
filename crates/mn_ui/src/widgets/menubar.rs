@@ -8,7 +8,7 @@ pub(crate) fn menu_bar(
     ctx: &egui::Context,
     ui: &mut egui::Ui,
     mut appwindow_writer: MessageWriter<AppWindowCommand>,
-    icon_textures: HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>,
+    icon_textures: &HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>,
 ) -> egui::InnerResponse<()> {
     egui::MenuBar::new().ui(ui, |ui| {
         let drag_interaction = ui.interact(
@@ -140,7 +140,7 @@ fn window_controls(
     _ctx: &egui::Context,
     ui: &mut egui::Ui,
     appwindow_writer: &mut MessageWriter<AppWindowCommand>,
-    icon_textures: HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>
+    icon_textures: &HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>
 ) {
     ui.scope(|ui| {
         ui.style_mut().spacing.button_padding = egui::vec2(3.0, 3.0); 
