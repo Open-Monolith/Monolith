@@ -20,8 +20,9 @@ impl Plugin for MonolithUIPlugin {
            .init_resource::<DockStateResource>()
            .init_resource::<mn_core::DockData>()
            .init_resource::<mn_core::icons::IconTextures>()
+           .init_resource::<theme::ThemeResource>()
            .add_systems(Startup, (
-                theme::configure_theme,
+                theme::configure_theme_startup,
                 icons::setup_icon_textures
            ))
            .add_systems(bevy_egui::EguiPrimaryContextPass, systems::ui_system);
