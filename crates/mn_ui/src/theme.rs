@@ -15,6 +15,8 @@ pub struct Palette {
     // general
     pub bg: egui::Color32,
     pub panel: egui::Color32,
+    pub property: egui::Color32,
+    pub values: egui::Color32,
 
     // Widgets
     pub widget_bg: egui::Color32,
@@ -30,6 +32,8 @@ pub struct Palette {
 
     // Misc
     pub accent: egui::Color32,
+
+    pub button: egui::Color32,
 }
 
 #[derive(Resource, Debug)]
@@ -47,6 +51,8 @@ impl Default for ThemeResource {
         let dark = Palette {
             bg: hex_to_color("#181818"),
             panel: hex_to_color("#282828"),
+            property: hex_to_color("#3D3D3D"),
+            values: hex_to_color("#8e8e8e"),
             widget_bg: hex_to_color("#2A2A2A"),
             widget_weak_bg: hex_to_color("#222222"),
             widget_stroke: egui::Stroke::NONE,
@@ -54,12 +60,16 @@ impl Default for ThemeResource {
             selection_stroke: egui::Stroke::NONE,
             text_color: Some(egui::Color32::from_gray(242)),
             accent: hex_to_color("#3A6EA5"),
+            
+            button: hex_to_color("#E0E0E0"),
         };
 
         // default light palette
         let light = Palette {
-            bg: hex_to_color("#F0F0F0"),
-            panel: hex_to_color("#E0E0E0"),
+            bg: hex_to_color("#E0E0E0"),
+            panel: hex_to_color("#F0F0F0"),
+            property: hex_to_color("#d1d1d1"),
+            values: hex_to_color("#bcbcbc"),
             widget_bg: hex_to_color("#EBEBEB"),
             widget_weak_bg: hex_to_color("#F5F5F5"),
             widget_stroke: egui::Stroke::new(1.0, hex_to_color("#D0D0D0")),
@@ -67,6 +77,8 @@ impl Default for ThemeResource {
             selection_stroke: egui::Stroke::NONE,
             text_color: Some(egui::Color32::from_gray(40)),
             accent: hex_to_color("#3A6EA5"),
+
+            button: hex_to_color("#282828"),
         };
 
         Self {
@@ -99,11 +111,13 @@ impl ThemeResource {
         let mut style: egui::Style = ctx.style().as_ref().clone();
         let theme = self.current();
 
+        style.visuals.extreme_bg_color = theme.values; // <--- ADD THIS
+
         // Widgets
-        style.visuals.widgets.inactive.bg_fill = theme.widget_bg;
-        style.visuals.widgets.inactive.weak_bg_fill = theme.widget_weak_bg;
+        style.visuals.widgets.inactive.bg_fill = theme.values;
+        style.visuals.widgets.inactive.weak_bg_fill = theme.values;
         style.visuals.widgets.inactive.bg_stroke = theme.widget_stroke;
-        
+
         // Selection
         style.visuals.selection.bg_fill = theme.selection_bg;
         style.visuals.selection.stroke = theme.selection_stroke;

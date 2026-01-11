@@ -4,6 +4,8 @@ use bevy_egui::egui::{self, TextureId};
 use mn_core::icons::Icon;
 use std::hash::Hash;
 
+// use crate::icons::IconUiExt;
+
 /// A reusable sidebar widget that handles selection state and layout.
 ///
 /// * `id_source`: Unique identifier for this widget (to store selection state).
@@ -61,11 +63,15 @@ pub fn icon_sidebar_panel<F>(
                     let tex_id = *icon_textures.get(&icon).unwrap_or(&TextureId::default());
                     let is_sel = selected == icon;
 
-                    let btn = egui::Button::image((tex_id, image_size))
+                    let img = egui::Image::new((tex_id, image_size))
+                        .tint(palette.button);
+
+                    let btn = egui::Button::image(img)
                         .fill(if is_sel { palette.panel } else { palette.bg })
                         .stroke(egui::Stroke::NONE)
                         .frame(true);
 
+                    // let resp = ui.icon_button_tinted(tex_id, image_size, theme, is_sel);
                     if ui.add(btn).clicked() {
                         selected = icon;
                     }
