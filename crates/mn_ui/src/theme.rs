@@ -130,9 +130,11 @@ impl ThemeResource {
         style.tab_bar.bg_fill = theme.panel;
 
         // Tab
-        style.tab.tab_body.stroke = egui::Stroke::NONE;
         style.tab_bar.corner_radius = egui::CornerRadius::ZERO;
+        style.tab.tab_body.stroke = egui::Stroke::new(1.0, hex_to_color("#414141"));
         style.tab.tab_body.corner_radius = egui::CornerRadius::ZERO;
+        // style.tab.tab_body.inner_margin = egui::Margin::same(5); 
+
         // Tab Outline
         style.tab.active.outline_color = egui::Color32::TRANSPARENT;
         style.tab.inactive.outline_color = egui::Color32::TRANSPARENT;

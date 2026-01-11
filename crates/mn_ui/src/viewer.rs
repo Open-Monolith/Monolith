@@ -23,6 +23,10 @@ impl TabViewer for MyTabViewer<'_> {
         format!("{:?}", tab.kind).into()
     }
 
+    fn scroll_bars(&self, _tab: &Self::Tab) -> [bool; 2] {
+        [false, true]  // [horizontal, vertical] - disable horizontal, enable vertical
+    }
+
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
 
         egui::ComboBox::from_id_salt("tab_kind_selector")

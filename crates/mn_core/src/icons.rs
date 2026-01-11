@@ -9,6 +9,8 @@ pub struct IconTextures {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Icon {
+    Separator,
+
     WindowClose,
     WindowMaximize,
     WindowMinimize,
@@ -17,6 +19,12 @@ pub enum Icon {
     TabPropertyGraphics,
     TabPropertyExport,
     TabPropertyTools,
+
+    TabPropertyConstrait,
+    TabPropertyMaterial,
+    TabPropertyModel,
+    TabPropertyModifiers,
+    TabPropertyParameters
 }
 
 pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| {
@@ -29,6 +37,12 @@ pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| 
         (Icon::TabPropertyGraphics, "ui/icons/tab_properties/graphic/graphic_dark.png"),
         (Icon::TabPropertyExport, "ui/icons/tab_properties/tool/tool_dark.png"),
         (Icon::TabPropertyTools, "ui/icons/tab_properties/view/view_dark.png"),
+
+        (Icon::TabPropertyConstrait, "ui/icons/tab_properties/constraint/constraint_dark.png"),
+        (Icon::TabPropertyMaterial, "ui/icons/tab_properties/material/material_dark.png"),
+        (Icon::TabPropertyModel, "ui/icons/tab_properties/model/model_dark.png"),
+        (Icon::TabPropertyModifiers, "ui/icons/tab_properties/modifiers/modifiers_dark.png"),
+        (Icon::TabPropertyParameters, "ui/icons/tab_properties/parameters/parameters_dark.png"),
 
     ])
 });

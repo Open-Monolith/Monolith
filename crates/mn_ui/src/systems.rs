@@ -15,7 +15,7 @@ pub fn ui_system(
     _window: Single<&mut Window, With<PrimaryWindow>>,
     mut appwindow_writer: MessageWriter<AppWindowCommand>,
     icon_textures: ResMut<mn_core::icons::IconTextures>,
-    mut theme: ResMut<ThemeResource>,
+    theme: ResMut<ThemeResource>,
 ) {
     // Safe guards
     let Ok(ctx) = contexts.ctx_mut() else { return };
@@ -62,7 +62,7 @@ pub fn ui_system(
                 theme: &theme,
             },
         );
-
+        
     for (id, rect) in visible_viewports {
         dock_data
             .viewports
