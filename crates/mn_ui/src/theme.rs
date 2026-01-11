@@ -3,7 +3,7 @@ use bevy_egui::{
     egui::{self} 
 };
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Mode {
     Dark,
     Light
@@ -58,15 +58,15 @@ impl Default for ThemeResource {
 
         // default light palette
         let light = Palette {
-            bg: hex_to_color("#FFFFFF"),
-            panel: hex_to_color("#E6E6E6"),
-            widget_bg: hex_to_color("#F5F5F5"),
-            widget_weak_bg: hex_to_color("#FAFAFA"),
-            widget_stroke: egui::Stroke::new(1.0, hex_to_color("#CCCCCC")),
-            selection_bg: hex_to_color("#2A6EA6"),
-            selection_stroke: egui::Stroke::new(2.0, egui::Color32::WHITE),
-            text_color: Some(egui::Color32::from_gray(20)),
-            accent: hex_to_color("#2A6EA6"),
+            bg: hex_to_color("#F0F0F0"),
+            panel: hex_to_color("#E0E0E0"),
+            widget_bg: hex_to_color("#EBEBEB"),
+            widget_weak_bg: hex_to_color("#F5F5F5"),
+            widget_stroke: egui::Stroke::new(1.0, hex_to_color("#D0D0D0")),
+            selection_bg: hex_to_color("#3A6EA5"),
+            selection_stroke: egui::Stroke::NONE,
+            text_color: Some(egui::Color32::from_gray(40)),
+            accent: hex_to_color("#3A6EA5"),
         };
 
         Self {
@@ -131,7 +131,8 @@ impl ThemeResource {
 
         // Tab
         style.tab_bar.corner_radius = egui::CornerRadius::ZERO;
-        style.tab.tab_body.stroke = egui::Stroke::new(1.0, hex_to_color("#414141"));
+        // style.tab.tab_body.stroke = egui::Stroke::new(1.0, hex_to_color("#414141"));
+        style.tab.tab_body.stroke = egui::Stroke::NONE;
         style.tab.tab_body.corner_radius = egui::CornerRadius::ZERO;
         // style.tab.tab_body.inner_margin = egui::Margin::same(5); 
 

@@ -47,7 +47,7 @@ impl TabViewer for MyTabViewer<'_> {
                 tabs::viewport::show(ui, self, tab);
             }
             TabKind::Explorer => {
-                tabs::explorer::show(ui, tab);
+                tabs::explorer::show(ui, tab, self.icon_textures, self.theme);
             }
             TabKind::Console => {
                 tabs::console::show(ui, tab);

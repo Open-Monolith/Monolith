@@ -15,11 +15,11 @@ pub fn ui_system(
     _window: Single<&mut Window, With<PrimaryWindow>>,
     mut appwindow_writer: MessageWriter<AppWindowCommand>,
     icon_textures: ResMut<mn_core::icons::IconTextures>,
-    theme: ResMut<ThemeResource>,
+    mut theme: ResMut<ThemeResource>,
 ) {
     // Safe guards
     let Ok(ctx) = contexts.ctx_mut() else { return };
-    
+
     let screen_r = ctx.viewport_rect();
     if screen_r.width() < 50.0 || screen_r.height() < 50.0 {
         return;
@@ -43,7 +43,9 @@ pub fn ui_system(
             ..Default::default()
         })
         .show(ctx, |ui| {
-            ui.horizontal(|ui| menubar::menu_bar(ctx, ui, appwindow_writer, &textures));
+            ui.horizontal(|ui| 
+                menubar::menu_bar(ctx, ui, appwindow_writer, &textures, &mut theme)
+            );
         });
 
     // Create dock area with the map
@@ -62,7 +64,7 @@ pub fn ui_system(
                 theme: &theme,
             },
         );
-        
+
     for (id, rect) in visible_viewports {
         dock_data
             .viewports

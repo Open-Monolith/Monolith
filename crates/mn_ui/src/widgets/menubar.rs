@@ -4,11 +4,14 @@ use bevy_egui::egui;
 
 use mn_core::{AppWindowCommand, icons::Icon};
 
+use crate::theme::{self, ThemeResource};
+
 pub(crate) fn menu_bar(
     ctx: &egui::Context,
     ui: &mut egui::Ui,
     mut appwindow_writer: MessageWriter<AppWindowCommand>,
     icon_textures: &HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>,
+    theme: &mut ThemeResource,
 ) -> egui::InnerResponse<()> {
     egui::MenuBar::new().ui(ui, |ui| {
         let drag_interaction = ui.interact(
@@ -25,7 +28,8 @@ pub(crate) fn menu_bar(
         file_menu(ctx, ui);
         edit_menu(ctx, ui);
         window_menu(ctx, ui);
-        view_menu(ctx, ui);
+        view_menu(ctx, ui, theme);
+        about_menu(ctx, ui);
 
         ui.add_space(25.);
 
@@ -88,6 +92,99 @@ fn edit_menu(_ctx: &egui::Context, ui: &mut egui::Ui) {
     });
 }
 
+fn view_menu(ctx: &egui::Context, ui: &mut egui::Ui, theme: &mut ThemeResource) {
+    ui.menu_button("View", |ui| {
+        // Theme toggle section
+        ui.menu_button("Theme", |ui| {
+            
+            if ui.selectable_label(theme.mode == theme::Mode::Dark, "🌙 Dark Mode").clicked() {
+                theme.toggle_mode(ctx);
+            }
+            
+            if ui.selectable_label(theme.mode == theme::Mode::Light, "☀ Light Mode").clicked() {
+                theme.toggle_mode(ctx);
+            }
+        });
+        
+        ui.separator();
+        
+        // Display options
+        ui.menu_button("Display", |ui| {
+            if ui.button("Zoom In (Ctrl + +)").clicked() {}
+            if ui.button("Zoom Out (Ctrl + -)").clicked() {}
+            if ui.button("Reset Zoom (Ctrl + 0)").clicked() {}
+            ui.separator();
+            if ui.button("Fit to Window").clicked() {}
+            if ui.button("Fit Selection").clicked() {}
+        });
+        
+        ui.separator();
+        
+        // Grid and guides
+        ui.menu_button("Grid & Guides", |ui| {
+            let mut show_grid = true; // Store this in your app state
+            ui.checkbox(&mut show_grid, "Show Grid");
+            
+            let mut snap_to_grid = false; // Store this in your app state
+            ui.checkbox(&mut snap_to_grid, "Snap to Grid");
+            
+            ui.separator();
+            
+            let mut show_guides = true; // Store this in your app state
+            ui.checkbox(&mut show_guides, "Show Guides");
+            
+            let mut show_rulers = true; // Store this in your app state
+            ui.checkbox(&mut show_rulers, "Show Rulers");
+        });
+        
+        ui.separator();
+        
+        // Viewport options
+        ui.menu_button("Viewport", |ui| {
+            if ui.button("Top View").clicked() {}
+            if ui.button("Front View").clicked() {}
+            if ui.button("Side View").clicked() {}
+            if ui.button("Perspective").clicked() {}
+            ui.separator();
+            if ui.button("Camera Properties...").clicked() {}
+        });
+        
+        ui.separator();
+        
+        // Rendering options
+        ui.menu_button("Rendering", |ui| {
+            let mut wireframe = false; // Store this in your app state
+            ui.checkbox(&mut wireframe, "Wireframe Mode");
+            
+            let mut show_shadows = true;
+            ui.checkbox(&mut show_shadows, "Shadows");
+            
+            let mut show_lighting = true;
+            ui.checkbox(&mut show_lighting, "Lighting");
+            
+            let mut show_materials = true;
+            ui.checkbox(&mut show_materials, "Materials");
+            
+            ui.separator();
+            
+            if ui.button("Render Settings...").clicked() {}
+        });
+        
+        ui.separator();
+        
+        // Tools and overlays
+        if ui.button("Toggle Fullscreen (F11)").clicked() {
+            // Toggle fullscreen
+        }
+        
+        let mut show_stats = false; // Store this in your app state
+        ui.checkbox(&mut show_stats, "Show Statistics");
+        
+        let mut show_fps = true;
+        ui.checkbox(&mut show_fps, "Show FPS Counter");
+    });
+}
+
 fn window_menu(_ctx: &egui::Context, ui: &mut egui::Ui) {
     ui.menu_button("Window", |ui| {
         ui.menu_button("Workspaces", |ui| {
@@ -111,8 +208,8 @@ fn window_menu(_ctx: &egui::Context, ui: &mut egui::Ui) {
     });
 }
 
-fn view_menu(_ctx: &egui::Context, ui: &mut egui::Ui) {
-    ui.menu_button("View", |ui| {
+fn about_menu(_ctx: &egui::Context, ui: &mut egui::Ui) {
+    ui.menu_button("About", |ui| {
         if ui.button("Documentation").clicked() {}
         if ui.button("Keyboard Shortcuts").clicked() {}
         if ui.button("Report a Bug").clicked() {}

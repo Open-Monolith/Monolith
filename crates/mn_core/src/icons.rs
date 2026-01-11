@@ -15,6 +15,7 @@ pub enum Icon {
     WindowMaximize,
     WindowMinimize,
 
+    // Properties
     TabPropertyView,
     TabPropertyGraphics,
     TabPropertyExport,
@@ -24,25 +25,40 @@ pub enum Icon {
     TabPropertyMaterial,
     TabPropertyModel,
     TabPropertyModifiers,
-    TabPropertyParameters
+    TabPropertyParameters,
+
+    // Explorer
+    TabExplorerAssets,
+    TabExplorerGroups,
+    TabExplorerSchedules,
+    TabExplorerSheets,
+    TabExplorerViews,
 }
 
 pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| {
     HashMap::from([
-        (Icon::WindowClose, "ui/icons/windows_controls/close/close_dark.png"),
-        (Icon::WindowMinimize, "ui/icons/windows_controls/minimize/minimize_dark.png"),
-        (Icon::WindowMaximize, "ui/icons/windows_controls/maximize/maximize_dark.png"),
+        (Icon::WindowClose, "ui/icons/windows_controls/close/close.png"),
+        (Icon::WindowMinimize, "ui/icons/windows_controls/minimize/minimize.png"),
+        (Icon::WindowMaximize, "ui/icons/windows_controls/maximize/maximize.png"),
 
-        (Icon::TabPropertyView, "ui/icons/tab_properties/export/export_dark.png"),
-        (Icon::TabPropertyGraphics, "ui/icons/tab_properties/graphic/graphic_dark.png"),
-        (Icon::TabPropertyExport, "ui/icons/tab_properties/tool/tool_dark.png"),
-        (Icon::TabPropertyTools, "ui/icons/tab_properties/view/view_dark.png"),
+        // Properties
+        (Icon::TabPropertyView, "ui/icons/tab_properties/export/export.png"),
+        (Icon::TabPropertyGraphics, "ui/icons/tab_properties/graphic/graphic.png"),
+        (Icon::TabPropertyExport, "ui/icons/tab_properties/tool/tool.png"),
+        (Icon::TabPropertyTools, "ui/icons/tab_properties/view/view.png"),
 
-        (Icon::TabPropertyConstrait, "ui/icons/tab_properties/constraint/constraint_dark.png"),
-        (Icon::TabPropertyMaterial, "ui/icons/tab_properties/material/material_dark.png"),
-        (Icon::TabPropertyModel, "ui/icons/tab_properties/model/model_dark.png"),
-        (Icon::TabPropertyModifiers, "ui/icons/tab_properties/modifiers/modifiers_dark.png"),
-        (Icon::TabPropertyParameters, "ui/icons/tab_properties/parameters/parameters_dark.png"),
+        (Icon::TabPropertyConstrait, "ui/icons/tab_properties/constraint/constraint.png"),
+        (Icon::TabPropertyMaterial, "ui/icons/tab_properties/material/material.png"),
+        (Icon::TabPropertyModel, "ui/icons/tab_properties/model/model.png"),
+        (Icon::TabPropertyModifiers, "ui/icons/tab_properties/modifiers/modifiers.png"),
+        (Icon::TabPropertyParameters, "ui/icons/tab_properties/parameters/parameters.png"),
+
+        // Explorer
+        (Icon::TabExplorerAssets, "ui/icons/tab_explorer/assets/assets.png"),
+        (Icon::TabExplorerGroups, "ui/icons/tab_explorer/groups/groups.png"),
+        (Icon::TabExplorerSchedules, "ui/icons/tab_explorer/schedules/schedules.png"),
+        (Icon::TabExplorerSheets, "ui/icons/tab_explorer/sheets/sheets.png"),
+        (Icon::TabExplorerViews, "ui/icons/tab_explorer/views/views.png"),
 
     ])
 });
