@@ -24,7 +24,7 @@ impl TabViewer for MyTabViewer<'_> {
     }
 
     fn scroll_bars(&self, _tab: &Self::Tab) -> [bool; 2] {
-        [false, true]  // [horizontal, vertical] - disable horizontal, enable vertical
+        [true, true]  // [horizontal, vertical] - disable horizontal, enable vertical
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {

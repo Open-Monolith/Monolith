@@ -52,7 +52,7 @@ impl Default for ThemeResource {
             bg: hex_to_color("#181818"),
             panel: hex_to_color("#282828"),
             property: hex_to_color("#3D3D3D"),
-            values: hex_to_color("#8e8e8e"),
+            values: hex_to_color("#545454"),
             widget_bg: hex_to_color("#2A2A2A"),
             widget_weak_bg: hex_to_color("#222222"),
             widget_stroke: egui::Stroke::NONE,
@@ -128,6 +128,7 @@ impl ThemeResource {
         style.visuals.override_text_color = theme.text_color; 
 
         ctx.set_style(style);
+        ctx.request_repaint();
     }
 
     pub fn to_dock_style(&self, ctx: &egui::Context) -> egui_dock::Style {
@@ -186,7 +187,7 @@ pub fn configure_theme_startup(mut contexts: bevy_egui::EguiContexts, mut comman
 
         setup_fonts(&ctx);
 
-        commands.insert_resource(theme_res); // init at lib cause it would crash without it. this line simply overwrites
+        // commands.insert_resource(theme_res); // init at lib cause it would crash without it. this line simply overwrites
     }
 }
 

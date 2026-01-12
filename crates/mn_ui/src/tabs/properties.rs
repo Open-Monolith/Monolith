@@ -1,9 +1,9 @@
 use crate::theme::ThemeResource;
 use bevy::platform::collections::HashMap;
-use bevy_egui::egui::{self};
+use bevy_egui::egui::{self, CollapsingHeader};
 use mn_core::{MonoTab, icons::Icon};
 
-use crate::widgets::vertical_tab::icon_sidebar_panel; // Import the function above
+use crate::widgets::vertical_tab::icon_sidebar_panel;
 
 pub fn show(
     ui: &mut egui::Ui,
@@ -12,7 +12,7 @@ pub fn show(
     theme: &ThemeResource,
 ) {
     let palette = theme.current();
-    // 1. Define the icons you want for THIS specific tab
+
     let my_icons = [
         Icon::TabPropertyTools,
         Icon::TabPropertyView,
@@ -26,20 +26,14 @@ pub fn show(
         Icon::TabPropertyMaterial,
     ];
 
-    // 2. Call the reusable widget
-    // We pass `tab.id` as the unique ID source so state is saved per tab
     icon_sidebar_panel(
         ui,
         tab.id,
         icon_textures,
         theme,
         &my_icons,
-        Icon::TabPropertyModel, // Default selection
+        Icon::TabPropertyModel,
         |ui, selected_icon| {
-            let total_width = ui.available_width();
-            let col_width = (total_width / 2.0) - 10.0;
-
-            // 3. Define the content logic here
             match selected_icon {
                 Icon::TabPropertyExport => {
                     ui.heading("Export Settings");
@@ -47,48 +41,60 @@ pub fn show(
                 }
                 Icon::TabPropertyTools => {
                     ui.heading("Tools");
-                    if ui.button("Clean Mesh").clicked() { /* ... */ }
+                    if ui.button("Clean Mesh").clicked() {}
                 }
                 Icon::TabPropertyModel => {
-                    ui.label("Shadow Quality: High");
-
+                    // Frame with padding
                     egui::Frame::NONE
-                        .fill(palette.property) 
-                        .inner_margin(4.0)
-                        .outer_margin(4.0)
+                        .fill(palette.property)
+                        .inner_margin(egui::Margin::same(6))
+                        .outer_margin(egui::Margin::ZERO)
                         .corner_radius(4.0)
                         .show(ui, |ui| {
+                            // CRITICAL FIX 2: Calculate widths INSIDE Frame.show()
+                            // Now ui.available_width() returns the correct width AFTER inner_margin
+                            let available = ui.available_size().x;
 
-                            ui.set_width(ui.available_width());
+                            // Column percentages
+                            let col1_percent = 0.45;
+                            let col2_percent = 0.55;
 
-                            egui::CollapsingHeader::new("Type")
-                                .default_open(true)
+                            let col1_w = available * col1_percent;
+                            let col2_w = available * col2_percent;
+                            let row_h = ui.spacing().interact_size.y;
+
+                            ui.set_width(col1_w + col2_w);
+
+                            print!("{:?} {:?}\n", available, col1_w + col2_w);
+
+                            CollapsingHeader::new("Type")
+                                .default_open(false)
                                 .show(ui, |ui| {
+                                    let grid_id = format!("grid_type_{}", tab.id);
 
-                                    egui::Grid::new("unique_grid_type")
+                                    egui::Grid::new(grid_id)
                                         .num_columns(2)
-                                        .spacing([40., 40.])
-                                        .striped(true)
-                                        .min_col_width(col_width)
-                                        .max_col_width(col_width)
+                                        .min_col_width(0.0) // Allow columns to be sized by widgets
                                         .show(ui, |ui| {
-                                            // Column 1
-                                            ui.with_layout(
-                                                egui::Layout::right_to_left(egui::Align::Center),
-                                                |ui| {
-                                                    ui.label("Type");
-                                                },
-                                            );
+                                            // Row 1: Type
+                                            ui.add_sized(
+                                                        [col1_w-10., row_h],
+                                                        egui::Label::new("Type"),
+                                                    );
 
-                                            // Column 2
-                                            ui.add(egui::DragValue::new(&mut 2));
+                                            ui.add_sized(
+                                                [col2_w-10., row_h],
+                                                egui::DragValue::new(&mut 1).speed(1.0),
+                                            );
+                                            
                                             ui.end_row();
+
                                         });
                                 });
                         });
                 }
-                _ => {
-                    ui.label(format!("Not implemented: {:?}", selected_icon));
+                other => {
+                    ui.label(format!("Not implemented: {:?}", other));
                 }
             }
         },

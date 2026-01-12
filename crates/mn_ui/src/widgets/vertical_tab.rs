@@ -4,14 +4,9 @@ use bevy_egui::egui::{self, TextureId};
 use mn_core::icons::Icon;
 use std::hash::Hash;
 
-// use crate::icons::IconUiExt;
+const SIDEBAR_WIDTH: f32 = 30.0; // 18px icon + 12px padding
 
 /// A reusable sidebar widget that handles selection state and layout.
-///
-/// * `id_source`: Unique identifier for this widget (to store selection state).
-/// * `icons`: The list of icons to display in the sidebar.
-/// * `default_selection`: The icon to select if none is stored in memory.
-/// * `content_builder`: A closure that takes `(ui, selected_icon)` to render the content area.
 pub fn icon_sidebar_panel<F>(
     ui: &mut egui::Ui,
     id_source: impl Hash,
@@ -25,8 +20,7 @@ pub fn icon_sidebar_panel<F>(
 {
     let palette = theme.current();
 
-    // 1. Manage State
-    // We create a unique ID based on the source passed in (e.g., tab.id)
+    // Manage State
     let sel_key = ui.make_persistent_id(id_source);
     let mut selected: Icon = ui
         .data_mut(|d| d.get_temp::<Icon>(sel_key))
@@ -35,19 +29,14 @@ pub fn icon_sidebar_panel<F>(
     ui.horizontal_top(|ui| {
         ui.spacing_mut().item_spacing.x = 0.0;
 
-        // ------ Sidebar ------
-        let sidebar_frame = egui::Frame {
-            fill: palette.bg,
-            corner_radius: egui::CornerRadius::same(0),
-            inner_margin: egui::Margin::ZERO,
-            ..Default::default()
-        };
-
-        sidebar_frame.show(ui, |ui| {
+        // ------ Sidebar (FIXED WIDTH) ------
+        egui::Frame::NONE.fill(palette.bg).show(ui, |ui| {
+            // Set exact width for sidebar
+            ui.set_width(SIDEBAR_WIDTH);
             ui.set_min_height(ui.available_height());
-            ui.set_max_width(18.0 + 12.0); // Icon + padding
 
-            ui.vertical_centered(|ui| {
+            // Use vertical (NOT vertical_centered which takes all horizontal space)
+            ui.vertical(|ui| {
                 ui.style_mut().spacing.button_padding = egui::vec2(6.0, 6.0);
                 ui.style_mut().spacing.item_spacing = egui::Vec2::ZERO;
 
@@ -59,19 +48,21 @@ pub fn icon_sidebar_panel<F>(
                         continue;
                     }
 
-                    // Handle missing texture gracefully
                     let tex_id = *icon_textures.get(&icon).unwrap_or(&TextureId::default());
                     let is_sel = selected == icon;
 
-                    let img = egui::Image::new((tex_id, image_size))
-                        .tint(palette.button);
-
+                    let img = egui::Image::new((tex_id, image_size)).tint(palette.button);
                     let btn = egui::Button::image(img)
                         .fill(if is_sel { palette.panel } else { palette.bg })
                         .stroke(egui::Stroke::NONE)
                         .frame(true);
 
-                    // let resp = ui.icon_button_tinted(tex_id, image_size, theme, is_sel);
+                    // Center button horizontally
+                    let btn_offset = (SIDEBAR_WIDTH - image_size.x - 12.0) / 2.0;
+                    if btn_offset > 0.0 {
+                        ui.add_space(btn_offset);
+                    }
+
                     if ui.add(btn).clicked() {
                         selected = icon;
                     }
@@ -80,18 +71,20 @@ pub fn icon_sidebar_panel<F>(
         });
 
         // ------ Content Area ------
-        // We use allocate_ui with available_size to ensure it takes the rest of the space
-        // without growing infinitely (fixing your previous horizontal scrollbar issue too).
-        egui::Frame::NONE.fill(palette.panel).show(ui, |ui| {
-            ui.allocate_ui(ui.available_size(), |ui| {
-                ui.horizontal(|ui| {
-                    ui.add_space(10.0);
-                    ui.vertical(|ui| {
-                        content_builder(ui, selected);
-                    });
+
+        egui::Frame::NONE
+            .fill(palette.panel)
+            .inner_margin(egui::Margin {
+                left: 10,
+                right: 5,
+                top: 10,
+                bottom: 10,
+            })
+            .show(ui, |ui| {
+                ui.vertical(|ui| {
+                    content_builder(ui, selected);
                 });
             });
-        });
     });
 
     // Save state

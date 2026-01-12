@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use crate::dock_state::DockStateResource;
+use bevy_egui::EguiPrimaryContextPass; // <- correct schedule token
 
 mod viewer;
 mod systems;
@@ -17,11 +18,11 @@ impl Plugin for MonolithUIPlugin {
         assert!(app.is_plugin_added::<bevy_egui::EguiPlugin>());
 
         app.add_message::<mn_core::AppWindowCommand>()
+            .init_resource::<theme::ThemeResource>()
            .init_resource::<DockStateResource>()
            .init_resource::<mn_core::DockData>()
            .init_resource::<mn_core::icons::IconTextures>()
-           .init_resource::<theme::ThemeResource>()
-           .add_systems(Startup, (
+           .add_systems(EguiPrimaryContextPass, (
                 theme::configure_theme_startup,
                 icons::setup_icon_textures
            ))
