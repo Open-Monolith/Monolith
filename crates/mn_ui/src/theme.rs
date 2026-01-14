@@ -34,13 +34,21 @@ pub struct Palette {
     pub accent: egui::Color32,
 
     pub button: egui::Color32,
+
+}
+
+#[derive(Clone, Debug)]
+pub struct Values {
+    pub label_font_size: f32,
+    pub numeric_font_size: f32,
 }
 
 #[derive(Resource, Debug)]
 pub struct ThemeResource {
     pub mode: Mode,
     pub dark: Palette,
-    pub light: Palette
+    pub light: Palette,
+    pub values: Values
 }
 
 
@@ -81,10 +89,16 @@ impl Default for ThemeResource {
             button: hex_to_color("#282828"),
         };
 
+        let values = Values {
+            label_font_size: 12.0,
+            numeric_font_size: 12.0,
+        };
+
         Self {
             mode: Mode::Dark,
             dark: dark,
-            light: light
+            light: light,
+            values: values
         }
     }
 }
@@ -110,6 +124,7 @@ impl ThemeResource {
     pub fn apply_to_ctx(&self, ctx: &egui::Context) {
         let mut style: egui::Style = ctx.style().as_ref().clone();
         let theme = self.current();
+        let values = &self.values;
 
         style.visuals.extreme_bg_color = theme.values; // <--- ADD THIS
 
@@ -126,6 +141,26 @@ impl ThemeResource {
         style.visuals.window_fill = theme.panel;
         // text color (egui::Visuals stores text_color Option)
         style.visuals.override_text_color = theme.text_color; 
+
+        
+        // Font Size
+        style.text_styles.insert(
+            egui::TextStyle::Body,
+            egui::FontId::proportional(values.label_font_size),
+        );
+        style.text_styles.insert(
+            egui::TextStyle::Button,
+            egui::FontId::proportional(values.label_font_size),
+        );
+        style.text_styles.insert(
+            egui::TextStyle::Small,
+            egui::FontId::proportional((values.label_font_size * 0.85).max(8.0)),
+        );
+        // Monospace used for numeric fields — set separately so numbers look consistent
+        style.text_styles.insert(
+            egui::TextStyle::Monospace,
+            egui::FontId::monospace(values.numeric_font_size),
+        );
 
         ctx.set_style(style);
         ctx.request_repaint();
