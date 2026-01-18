@@ -1,9 +1,9 @@
 use bevy::platform::collections::HashMap;
-use bevy_egui::egui::{self, Rect, TextureId};
+use bevy_egui::egui::{self, Rect, TextureId, Vec2};
 use egui_dock::TabViewer;
 
 use crate::{tabs, theme::ThemeResource, widgets::tabs_combobox::tabs_combobox};
-use mn_core::{ALL_TAB_KINDS, MonoTab, TabKind};
+use mn_core::{ALL_TAB_KINDS, MonoTab, TabKind, icons::Icon};
 
 pub struct MyTabViewer<'a> {
     // CHANGED: Store a map of ID -> Rect
@@ -11,7 +11,6 @@ pub struct MyTabViewer<'a> {
     pub icon_textures: &'a HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>,
     pub theme: &'a ThemeResource,
 }
-
 
 impl TabViewer for MyTabViewer<'_> {
     type Tab = MonoTab;
@@ -29,53 +28,61 @@ impl TabViewer for MyTabViewer<'_> {
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
-        // tabs_combobox
-        let tab_icons = HashMap
+        // helper returns Option<TextureId> (owned) not &TextureId
+        let tabkind_to_tex = |kind: &TabKind| -> Option<TextureId> {
+            match kind {
+                TabKind::Viewport => self.icon_textures.get(&Icon::TabViewport).copied(),
+                TabKind::Explorer => self.icon_textures.get(&Icon::TabExplorer).copied(),
+                TabKind::Console => self.icon_textures.get(&Icon::TabConsole).copied(),
+                TabKind::Properties => self.icon_textures.get(&Icon::TabProperty).copied(),
+            }
+        };
 
+        let icon_size = Vec2::splat(20.0);
 
+        // clone current selection into a local mutable variable.
+        // This prevents borrowing `tab.kind` mutably for the duration of UI closures.
+        let mut current = tab.kind.clone();
+
+        // use the *current* to draw the closed-state icon (no borrow of tab.kind)
         ui.horizontal(|ui| {
-            // show selected icon (or a placeholder space) to the left
-            if let Some(tex) = selected_tex {
+            if let Some(tex) = tabkind_to_tex(&current) {
                 ui.add(egui::Image::new((tex, icon_size)));
             } else {
                 ui.add_space(icon_size.x);
             }
 
-            // ComboBox: set selected_text to empty so only the icon is visible in the closed state.
-            egui::ComboBox::from_id_salt("tab_kind_selector")
-                .selected_text("") // empty so the icon to the left is the visible selector
-                .show_ui(ui, |ui| {
-                    for (value, label, tex) in options.iter() {
-                        ui.horizontal(|ui| {
-                            // create an Image from the (TextureId, Vec2) tuple and add it
-                            ui.add(egui::Image::new((*tex, icon_size)));
+            let combo_id = ("tab_kind_selector", tab.id);
 
-                            // selectable_value uses the label text; it will set `selected` when clicked
-                            // We use the string label as the UI text to the right of the icon.
-                            if ui
-                                .selectable_value(selected, (*value).clone(), *label)
-                                .clicked()
-                            {
-                                // nothing else required: selectable_value sets `selected`
+            egui::ComboBox::from_id_salt(combo_id)
+                .selected_text("") // empty — icon on the left is visible
+                .icon(|_ui, _rect, _visuals: &egui::style::WidgetVisuals, _is_open| {}) // hide default arrow if you like
+                .show_ui(ui, |ui| {
+                    for kind in ALL_TAB_KINDS.iter() {
+                        let label = format!("{:?}", kind);
+
+                        ui.horizontal(|ui| {
+                            if let Some(tex) = tabkind_to_tex(kind) {
+                                ui.add(egui::Image::new((tex, icon_size)));
+                                ui.add_space(6.0);
+                            } else {
+                                ui.add_space(icon_size.x + 6.0);
                             }
+
+                            // mutate `current` (local) — NOT `tab.kind`
+                            ui.selectable_value(&mut current, kind.clone(), label);
                         });
                     }
                 });
         });
 
-        // egui::ComboBox::from_id_salt("tab_kind_selector")
-        //     .selected_text(format!("{:?}", tab.kind))
-        //     .show_ui(ui, |ui| {
-        //         for kind in ALL_TAB_KINDS {
-        //             if ui
-        //                 .selectable_value(&mut tab.kind, kind.clone(), format!("{:?}", kind))
-        //                 .clicked()
-        //             {
-        //                 tab.title = format!("{:?}", kind);
-        //             }
-        //         }
-        //     });
+        // after the UI closures return, commit change back to `tab` if user selected a new kind
+        if current != tab.kind {
+            tab.kind = current;
+            tab.title = format!("{:?}", tab.kind);
+        }
 
+        // now use tab.kind safely for the rest of your UI
         match tab.kind {
             TabKind::Viewport => {
                 tabs::viewport::show(ui, self, tab);

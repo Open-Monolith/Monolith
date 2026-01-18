@@ -15,6 +15,12 @@ pub enum Icon {
     WindowMaximize,
     WindowMinimize,
 
+    // Tab
+    TabConsole,
+    TabProperty,
+    TabExplorer,
+    TabViewport,
+
     // Properties
     TabPropertyView,
     TabPropertyGraphics,
@@ -60,6 +66,11 @@ pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| 
         (Icon::TabExplorerSheets, "ui/icons/tab_explorer/sheets/sheets.png"),
         (Icon::TabExplorerViews, "ui/icons/tab_explorer/views/views.png"),
 
+        // Tabs
+        (Icon::TabConsole, "ui/icons/tab/console/console.png"),
+        (Icon::TabExplorer, "ui/icons/tab/explorer/explorer.png"),
+        (Icon::TabProperty, "ui/icons/tab/property/property.png"),
+        (Icon::TabViewport, "ui/icons/tab/viewport/viewport.png"),
     ])
 });
 
