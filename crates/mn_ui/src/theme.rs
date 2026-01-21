@@ -57,7 +57,7 @@ impl Default for ThemeResource {
 
         // default dark palette
         let dark = Palette {
-            bg: hex_to_color("#181818"),
+            bg: hex_to_color("#1D1D1D"),
             panel: hex_to_color("#282828"),
             property: hex_to_color("#3D3D3D"),
             values: hex_to_color("#545454"),
@@ -184,7 +184,7 @@ impl ThemeResource {
         // style.tab.tab_body.stroke = egui::Stroke::new(1.0, hex_to_color("#414141"));
         style.tab.tab_body.stroke = egui::Stroke::NONE;
         style.tab.tab_body.corner_radius = egui::CornerRadius::ZERO;
-        // style.tab.tab_body.inner_margin = egui::Margin::same(5); 
+        style.tab.tab_body.inner_margin = egui::Margin::same(0); 
 
         // Tab Outline
         style.tab.active.outline_color = egui::Color32::TRANSPARENT;

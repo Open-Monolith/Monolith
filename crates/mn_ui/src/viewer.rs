@@ -2,11 +2,10 @@ use bevy::platform::collections::HashMap;
 use bevy_egui::egui::{self, Rect, TextureId, Vec2};
 use egui_dock::TabViewer;
 
-use crate::{tabs, theme::ThemeResource, widgets::tabs_combobox::tabs_combobox};
+use crate::{tabs, theme::ThemeResource};
 use mn_core::{ALL_TAB_KINDS, MonoTab, TabKind, icons::Icon};
 
 pub struct MyTabViewer<'a> {
-    // CHANGED: Store a map of ID -> Rect
     pub viewports: &'a mut HashMap<u32, Rect>,
     pub icon_textures: &'a HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>,
     pub theme: &'a ThemeResource,
@@ -24,65 +23,50 @@ impl TabViewer for MyTabViewer<'_> {
     }
 
     fn scroll_bars(&self, _tab: &Self::Tab) -> [bool; 2] {
-        [true, true] // [horizontal, vertical] - disable horizontal, enable vertical
+        [true, true]
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
-        // helper returns Option<TextureId> (owned) not &TextureId
-        let tabkind_to_tex = |kind: &TabKind| -> Option<TextureId> {
+        let tabkind_icon = |kind: &TabKind| -> &Icon {
             match kind {
-                TabKind::Viewport => self.icon_textures.get(&Icon::TabViewport).copied(),
-                TabKind::Explorer => self.icon_textures.get(&Icon::TabExplorer).copied(),
-                TabKind::Console => self.icon_textures.get(&Icon::TabConsole).copied(),
-                TabKind::Properties => self.icon_textures.get(&Icon::TabProperty).copied(),
+                TabKind::Viewport => &Icon::TabViewport,
+                TabKind::Explorer => &Icon::TabExplorer,
+                TabKind::Console => &Icon::TabConsole,
+                TabKind::Properties => &Icon::TabProperty,
             }
         };
 
-        let icon_size = Vec2::splat(20.0);
-
-        // clone current selection into a local mutable variable.
-        // This prevents borrowing `tab.kind` mutably for the duration of UI closures.
         let mut current = tab.kind.clone();
+        let image_size = egui::vec2(18.0, 18.0);
+        let button1 = ui.add(
+            egui::Button::image((
+            self.icon_textures[tabkind_icon(&tab.kind)],
+            image_size,
+            ))
+            .fill(egui::Color32::TRANSPARENT)
+            .stroke(egui::Stroke::NONE)
+        );
 
-        // use the *current* to draw the closed-state icon (no borrow of tab.kind)
-        ui.horizontal(|ui| {
-            if let Some(tex) = tabkind_to_tex(&current) {
-                ui.add(egui::Image::new((tex, icon_size)));
-            } else {
-                ui.add_space(icon_size.x);
+        dropdown_popup(ui, &button1, format!("basic_dropdown_{}", tab.id), |ui| {
+            for kind in ALL_TAB_KINDS.iter() {
+                if ui
+                    .add(egui::Button::image_and_text(
+                        (self.icon_textures[tabkind_icon(kind)], image_size),
+                        format!("{:?}", kind),
+                    )
+                    )
+                    .clicked()
+                {
+                    current = *kind;
+                }
             }
-
-            let combo_id = ("tab_kind_selector", tab.id);
-
-            egui::ComboBox::from_id_salt(combo_id)
-                .selected_text("") // empty — icon on the left is visible
-                .icon(|_ui, _rect, _visuals: &egui::style::WidgetVisuals, _is_open| {}) // hide default arrow if you like
-                .show_ui(ui, |ui| {
-                    for kind in ALL_TAB_KINDS.iter() {
-                        let label = format!("{:?}", kind);
-
-                        ui.horizontal(|ui| {
-                            if let Some(tex) = tabkind_to_tex(kind) {
-                                ui.add(egui::Image::new((tex, icon_size)));
-                                ui.add_space(6.0);
-                            } else {
-                                ui.add_space(icon_size.x + 6.0);
-                            }
-
-                            // mutate `current` (local) — NOT `tab.kind`
-                            ui.selectable_value(&mut current, kind.clone(), label);
-                        });
-                    }
-                });
         });
 
-        // after the UI closures return, commit change back to `tab` if user selected a new kind
         if current != tab.kind {
             tab.kind = current;
             tab.title = format!("{:?}", tab.kind);
         }
 
-        // now use tab.kind safely for the rest of your UI
         match tab.kind {
             TabKind::Viewport => {
                 tabs::viewport::show(ui, self, tab);
@@ -102,4 +86,16 @@ impl TabViewer for MyTabViewer<'_> {
     fn clear_background(&self, tab: &Self::Tab) -> bool {
         !matches!(tab.kind, TabKind::Viewport)
     }
+}
+
+pub fn dropdown_popup<F>(
+    ui: &mut egui::Ui,
+    button_response: &egui::Response,
+    popup_id: impl Into<egui::Id>,
+    content_builder: impl FnOnce(&mut egui::Ui) -> F,
+) -> Option<F> {
+    egui::Popup::menu(button_response)
+        .id(popup_id.into())
+        .show(content_builder)
+        .map(|response| response.inner)
 }

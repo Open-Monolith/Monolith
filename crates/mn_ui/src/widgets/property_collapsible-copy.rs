@@ -41,7 +41,7 @@ where
                     egui::Grid::new(id_salt)
                         .num_columns(2)
                         .min_col_width(0.0)
-                        .spacing([0.0, 2.0])
+                        .spacing([3.0, 2.0])
                         .show(ui, |ui| {
                             content_builder(ui, widths);
                         });
@@ -53,32 +53,49 @@ pub fn property_row(
     ui: &mut egui::Ui,
     w: egui::Vec2,
     label: &str,
-    widget: impl egui::Widget, // <--- Accepts the Widget directly (DragValue, Button, etc.)
+    widget: impl egui::Widget,
 ) -> egui::Response {
     let row_h = ui.spacing().interact_size.y;
-
-    // 1. Draw Label (Column 1)
-
-
-    ui.allocate_ui_with_layout(
-        egui::Vec2::new(w[0] - 10.0, row_h),                 // subtract a little padding if you want
-        egui::Layout::left_to_right(egui::Align::Center),           // align content to the right
-        |ui: &mut Ui| {
-            ui.add_sized(
-                [w[0]-10., row_h],
-                egui::Label::new(label)
-            );
-        },
+    const R_PADDING: f32 = 10.0;
+    
+    let (rect, _) = ui.allocate_exact_size(
+        egui::vec2(w[0] - R_PADDING, row_h),
+        egui::Sense::hover()
     );
-
-    // 2. Draw Widget (Column 2) inside add_sized
-    // This forces the DragValue/Button/Checkbox to fill the calculated space.
+    
+    let font_id = egui::TextStyle::Body.resolve(ui.style());
+    let text_color = ui.style().visuals.text_color();
+    
+    ui.painter().text(
+        rect.right_center() - egui::vec2(2.0, 0.0),
+        egui::Align2::RIGHT_CENTER,
+        label,
+        font_id,
+        text_color,
+    );
+    
     let response = ui.add_sized(
-        [w[1]-10., row_h],
+        [w[1] - R_PADDING, row_h],
         widget
     );
-
     ui.end_row();
     
     response
+}
+
+
+pub fn vspace(__ui__: &mut egui::Ui, w: egui::Vec2) {
+    const R_PADDING: f32 = 10.0;
+    let height: f32 = 2.0;
+
+    // Allocate the full column widths with the specified height
+    __ui__.allocate_exact_size(
+        egui::vec2(w[0] - R_PADDING, height),
+        egui::Sense::hover()
+    );
+    __ui__.allocate_exact_size(
+        egui::vec2(w[1] - R_PADDING, height),
+        egui::Sense::hover()
+    );
+    __ui__.end_row();
 }

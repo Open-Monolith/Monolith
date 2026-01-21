@@ -29,7 +29,7 @@ pub enum Icon {
 
     TabPropertyConstrait,
     TabPropertyMaterial,
-    TabPropertyModel,
+    TabPropertySpatial,
     TabPropertyModifiers,
     TabPropertyParameters,
 
@@ -55,7 +55,7 @@ pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| 
 
         (Icon::TabPropertyConstrait, "ui/icons/tab_properties/constraint/constraint.png"),
         (Icon::TabPropertyMaterial, "ui/icons/tab_properties/material/material.png"),
-        (Icon::TabPropertyModel, "ui/icons/tab_properties/model/model.png"),
+        (Icon::TabPropertySpatial, "ui/icons/tab_properties/spatial/spatial.png"),
         (Icon::TabPropertyModifiers, "ui/icons/tab_properties/modifiers/modifiers.png"),
         (Icon::TabPropertyParameters, "ui/icons/tab_properties/parameters/parameters.png"),
 

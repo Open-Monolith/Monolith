@@ -3,8 +3,9 @@ use bevy::platform::collections::HashMap;
 use bevy_egui::egui::{self, CollapsingHeader};
 use mn_core::{MonoTab, icons::Icon};
 
-use crate::widgets::vertical_tab::icon_sidebar_panel;
-use crate::widgets::collapsible::{property_section, property_row};
+use crate::widgets::sidebar_panel::icon_sidebar_panel;
+use crate::tabs::properties_tabs::spatial_tab;
+
 
 pub fn show(
     ui: &mut egui::Ui,
@@ -20,7 +21,7 @@ pub fn show(
         Icon::TabPropertyGraphics,
         Icon::TabPropertyExport,
         Icon::Separator,
-        Icon::TabPropertyModel,
+        Icon::TabPropertySpatial,
         Icon::TabPropertyParameters,
         Icon::TabPropertyModifiers,
         Icon::TabPropertyConstrait,
@@ -33,7 +34,7 @@ pub fn show(
         icon_textures,
         theme,
         &my_icons,
-        Icon::TabPropertyModel,
+        Icon::TabPropertySpatial,
         |ui, selected_icon| {
             match selected_icon {
                 Icon::TabPropertyExport => {
@@ -44,19 +45,7 @@ pub fn show(
                     ui.heading("Tools");
                 if ui.button("Clean Mesh").clicked() {}
                 }
-                Icon::TabPropertyModel => {
-                    // Frame with padding
-                    property_section(ui, theme,
-                        "Type",
-                        format!("grid_type_{}", tab.id),
-                        |ui, w | {
-                            property_row(ui, w, "Type", egui::DragValue::new(&mut 1).speed(1.0));
-                            property_row(ui, w, "Typssse", egui::DragValue::new(&mut 1).speed(1.0));
-                            property_row(ui, w, "Tysssspe", egui::DragValue::new(&mut 1).speed(1.0));
-                        }
-                    );
-                    
-                }
+                Icon::TabPropertySpatial => spatial_tab::show(ui, tab, theme),
                 other => {
                     ui.label(format!("Not implemented: {:?}", other));
                 }

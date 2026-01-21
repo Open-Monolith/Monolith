@@ -3,7 +3,7 @@ use bevy::platform::collections::HashMap;
 use bevy_egui::egui::{self};
 use mn_core::{MonoTab, icons::Icon};
 
-use crate::widgets::vertical_tab::icon_sidebar_panel; // Import the function above
+use crate::widgets::sidebar_panel::icon_sidebar_panel; // Import the function above
 
 pub fn show(
     ui: &mut egui::Ui,
