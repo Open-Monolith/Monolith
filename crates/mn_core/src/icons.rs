@@ -20,6 +20,7 @@ pub enum Icon {
     TabProperty,
     TabExplorer,
     TabViewport,
+    TabAssetBrowser,
 
     // Properties
     TabPropertyView,
@@ -50,8 +51,8 @@ pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| 
         (Icon::WindowMaximize, "ui/icons/windows_controls/maximize/maximize.png"),
 
         // Properties
-        (Icon::TabPropertyView, "ui/icons/tab_properties/export/export.png"),
-        (Icon::TabPropertyExport, "ui/icons/tab_properties/tool/tool.png"),
+        (Icon::TabPropertyView, "ui/icons/tab_properties/view/view.png"),
+        (Icon::TabPropertyExport, "ui/icons/tab_properties/export/export.png"),
 
         // Object Properties
         (Icon::TabPropertySpatial, "ui/icons/tab_properties/spatial/spatial.png"),
@@ -77,6 +78,7 @@ pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| 
         (Icon::TabExplorer, "ui/icons/tab/explorer/explorer.png"),
         (Icon::TabProperty, "ui/icons/tab/property/property.png"),
         (Icon::TabViewport, "ui/icons/tab/viewport/viewport.png"),
+        (Icon::TabAssetBrowser, "ui/icons/tab/asset_browser/asset_browser.png"),
     ])
 });
 

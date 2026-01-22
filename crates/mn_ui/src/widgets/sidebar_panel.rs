@@ -13,6 +13,7 @@ pub fn sidebar_panel<F>(
     icon_textures: &HashMap<Icon, TextureId>,
     theme: &ThemeResource,
     icons: &[Icon],
+    icon_prefix: &str,
     default_selection: Icon,
     content_builder: F,
 ) where
@@ -87,7 +88,7 @@ pub fn sidebar_panel<F>(
                             .get(&selected)
                             .unwrap_or(&TextureId::default());
                         ui.add(egui::Image::new((tex_id, IMAGE_SIZE)).tint(palette.button));
-                        ui.label(format!(" {:?}", selected).replace("TabProperty", ""));
+                        ui.label(format!(" {:?}", selected).replace(icon_prefix, ""));
                     });
                     content_builder(ui, selected);
                 });

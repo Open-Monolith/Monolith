@@ -13,10 +13,10 @@ pub fn show(
 ) {
     let my_icons: [Icon; 5] = [
         Icon::TabExplorerAssets,
-        Icon::TabExplorerGroups,
-        Icon::TabExplorerSchedules,
-        Icon::TabExplorerSheets,
         Icon::TabExplorerViews,
+        Icon::TabExplorerSheets,
+        Icon::TabExplorerSchedules,
+        Icon::TabExplorerGroups,
     ];
 
     sidebar_panel(
@@ -25,6 +25,7 @@ pub fn show(
         icon_textures,
         theme,
         &my_icons,
+        "TabExplorer",
         Icon::TabExplorerAssets,
         |ui, selected_icon| {
             match selected_icon {

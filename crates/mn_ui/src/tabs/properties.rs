@@ -35,13 +35,14 @@ pub fn show(
         Icon::TabPropertyCollaboration,
     ];
 
-        
+
     sidebar_panel(
         ui,
         tab.id,
         icon_textures,
         theme,
         &my_icons,
+        "TabProperty",
         Icon::TabPropertySpatial,
         |ui, selected_icon| {
             match selected_icon {

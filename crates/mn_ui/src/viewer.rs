@@ -1,9 +1,10 @@
 use bevy::platform::collections::HashMap;
-use bevy_egui::egui::{self, Rect, TextureId, Vec2};
+use bevy_egui::egui::{self, Rect};
 use egui_dock::TabViewer;
+use strum::IntoEnumIterator;
 
+use mn_core::{MonoTab, TabKind, icons::Icon};
 use crate::{tabs, theme::ThemeResource};
-use mn_core::{ALL_TAB_KINDS, MonoTab, TabKind, icons::Icon};
 
 pub struct MyTabViewer<'a> {
     pub viewports: &'a mut HashMap<u32, Rect>,
@@ -19,7 +20,7 @@ impl TabViewer for MyTabViewer<'_> {
     }
 
     fn title(&mut self, tab: &mut Self::Tab) -> egui::WidgetText {
-        format!("{:?}", tab.kind).into()
+        tab.kind.to_string().into()
     }
 
     fn scroll_bars(&self, _tab: &Self::Tab) -> [bool; 2] {
@@ -37,12 +38,13 @@ impl TabViewer for MyTabViewer<'_> {
                 TabKind::Explorer => &Icon::TabExplorer,
                 TabKind::Console => &Icon::TabConsole,
                 TabKind::Properties => &Icon::TabProperty,
+                TabKind::AssetBrowser => &Icon::TabAssetBrowser,
             }
         };
 
         let mut current = tab.kind.clone();
         let image_size = egui::vec2(18.0, 18.0);
-        let button1 = ui.add(
+        let select_button = ui.add(
             egui::Button::image((
             self.icon_textures[tabkind_icon(&tab.kind)],
             image_size,
@@ -51,39 +53,31 @@ impl TabViewer for MyTabViewer<'_> {
             .stroke(egui::Stroke::NONE)
         );
 
-        dropdown_popup(ui, &button1, format!("basic_dropdown_{}", tab.id), |ui| {
-            for kind in ALL_TAB_KINDS.iter() {
+        dropdown_popup(&select_button, format!("basic_dropdown_{}", tab.id), |ui| {
+            for kind in TabKind::iter() {
                 if ui
                     .add(egui::Button::image_and_text(
-                        (self.icon_textures[tabkind_icon(kind)], image_size),
-                        format!("{:?}", kind),
+                        (self.icon_textures[tabkind_icon(&kind)], image_size),
+                        kind.to_string(),
                     )
                     )
                     .clicked()
                 {
-                    current = *kind;
+                    current = kind;
                 }
             }
         });
 
         if current != tab.kind {
             tab.kind = current;
-            tab.title = format!("{:?}", tab.kind);
         }
 
         match tab.kind {
-            TabKind::Viewport => {
-                tabs::viewport::show(ui, self, tab);
-            }
-            TabKind::Explorer => {
-                tabs::explorer::show(ui, tab, self.icon_textures, self.theme);
-            }
-            TabKind::Console => {
-                tabs::console::show(ui, tab);
-            }
-            TabKind::Properties => {
-                tabs::properties::show(ui, tab, self.icon_textures, self.theme);
-            }
+            TabKind::Viewport => tabs::viewport::show(ui, self, tab),
+            TabKind::Explorer => tabs::explorer::show(ui, tab, self.icon_textures, self.theme),
+            TabKind::Console => tabs::console::show(ui, tab),
+            TabKind::Properties => tabs::properties::show(ui, tab, self.icon_textures, self.theme),
+            TabKind::AssetBrowser => tabs::console::show(ui, tab),
         }
     }
 
@@ -93,7 +87,6 @@ impl TabViewer for MyTabViewer<'_> {
 }
 
 pub fn dropdown_popup<F>(
-    ui: &mut egui::Ui,
     button_response: &egui::Response,
     popup_id: impl Into<egui::Id>,
     content_builder: impl FnOnce(&mut egui::Ui) -> F,

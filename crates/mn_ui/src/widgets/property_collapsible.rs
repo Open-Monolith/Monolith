@@ -1,7 +1,6 @@
 use std::ops::RangeInclusive;
 
 use crate::theme::ThemeResource;
-use bevy::reflect::Enum;
 use bevy_egui::egui::{self, CollapsingHeader, Ui};
 use mn_core::MonoTab;
 use strum::IntoEnumIterator;
@@ -145,15 +144,15 @@ pub fn property_dropdown<T>(
     label: &str,
     value: &mut T,
 ) where
-    T: IntoEnumIterator + Copy + PartialEq + std::fmt::Debug,
+    T: IntoEnumIterator + Copy + PartialEq + std::fmt::Debug + std::fmt::Display,
 {
     property_row(ui, w, label, |ui| {
-        egui::ComboBox::from_id_salt(format!("Combobox_{}_{}", label.replace(" ", "") ,tab.id))
-            .selected_text(format!("{:?}", value))
+        egui::ComboBox::from_id_salt(format!("Combobox_{}_{}", label.replace(" ", ""), tab.id))
+            .selected_text(value.to_string())
             .width(ui.available_width())
             .show_ui(ui, |ui| {
                 for v in T::iter() {
-                    ui.selectable_value(value, v, format!("{:?}", v));
+                    ui.selectable_value(value, v, v.to_string());
                 }
             });
     });
