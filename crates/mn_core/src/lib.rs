@@ -3,6 +3,7 @@ use bevy::{
 };
 
 pub mod icons;
+pub mod enums;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TabKind {

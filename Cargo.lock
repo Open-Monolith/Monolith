@@ -3979,6 +3979,8 @@ dependencies = [
  "bevy_egui",
  "egui_dock",
  "log",
+ "strum 0.27.2",
+ "strum_macros 0.27.2",
  "wgpu-types 28.0.0",
 ]
 
@@ -3999,6 +4001,8 @@ dependencies = [
  "egui_dock",
  "log",
  "mn_core",
+ "strum 0.27.2",
+ "strum_macros 0.27.2",
 ]
 
 [[package]]

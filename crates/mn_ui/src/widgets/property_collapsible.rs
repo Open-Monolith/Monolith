@@ -1,13 +1,18 @@
+use std::ops::RangeInclusive;
+
 use crate::theme::ThemeResource;
+use bevy::reflect::Enum;
 use bevy_egui::egui::{self, CollapsingHeader, Ui};
+use mn_core::MonoTab;
+use strum::IntoEnumIterator;
 
 pub fn property_section<F>(
     ui: &mut Ui,
     theme: &ThemeResource,
     title: &str,
     id_salt: impl std::hash::Hash,
-    content_builder: F)
-where
+    content_builder: F,
+) where
     F: FnOnce(&mut Ui, egui::Vec2),
 {
     let palette = theme.current();
@@ -50,51 +55,164 @@ where
         });
 }
 
-pub fn property_row(
-    ui: &mut egui::Ui,
-    w: egui::Vec2,
-    label: &str,
-    widget: impl egui::Widget,
-) -> egui::Response {
-    let row_h = ui.spacing().interact_size.y;
+pub fn property_row<F>(ui: &mut egui::Ui, w: egui::Vec2, label: &str, contents: F)
+where
+    F: FnOnce(&mut egui::Ui),
+{
     const R_PADDING: f32 = 10.0;
-    
-    let (rect, _) = ui.allocate_exact_size(
-        egui::vec2(w[0] - R_PADDING, row_h),
-        egui::Sense::hover()
-    );
-    
+    let row_h = ui.spacing().interact_size.y;
+
+    let (left_rect, _) =
+        ui.allocate_exact_size(egui::vec2(w[0] - R_PADDING, row_h), egui::Sense::hover());
+
     let font_id = egui::TextStyle::Body.resolve(ui.style());
     let text_color = ui.style().visuals.text_color();
-    
+
     ui.painter().text(
-        rect.right_center() - egui::vec2(2.0, 0.0),
+        left_rect.right_center() - egui::vec2(2.0, 0.0),
         egui::Align2::RIGHT_CENTER,
         label,
         font_id,
         text_color,
     );
-    
-    let response = ui.add_sized(
-        [w[1] - R_PADDING, row_h],
-        widget
-    );
-    ui.end_row();
-    
-    response
-}
 
+    let right_rect = egui::vec2((w[1] - R_PADDING).max(0.0), row_h);
+    ui.allocate_ui(right_rect, |child_ui| {
+        contents(child_ui);
+    });
+
+    ui.end_row();
+}
 
 pub fn vspace(ui: &mut egui::Ui) {
     const HEIGHT: f32 = 2.0;
 
-    ui.allocate_exact_size(
-        egui::vec2(1.0, HEIGHT),
-        egui::Sense::hover()
-    );
-    ui.allocate_exact_size(
-        egui::vec2(1.0, HEIGHT),
-        egui::Sense::hover()
-    );
+    ui.allocate_exact_size(egui::vec2(1.0, HEIGHT), egui::Sense::hover());
+    ui.allocate_exact_size(egui::vec2(1.0, HEIGHT), egui::Sense::hover());
     ui.end_row();
 }
+
+pub fn property_str(ui: &mut egui::Ui, w: egui::Vec2, label: &str, value: &mut String) {
+    property_row(ui, w, label, |ui| {
+        ui.add(egui::TextEdit::singleline(value));
+    });
+}
+
+pub fn property_int<T>(
+    ui: &mut egui::Ui,
+    w: egui::Vec2,
+    label: &str,
+    value: &mut T,
+    range: RangeInclusive<T>,
+) where
+    T: egui::emath::Numeric,
+{
+    property_row(ui, w, label, |ui| {
+        ui.add_sized(
+            egui::vec2(w[1] - 10.0, ui.spacing().interact_size.y),
+            egui::DragValue::new(value)
+                .range(range)
+                .clamp_existing_to_range(true)
+                .speed(1.0),
+        );
+    });
+}
+
+pub fn property_slider<T>(
+    ui: &mut egui::Ui,
+    w: egui::Vec2,
+    label: &str,
+    value: &mut T,
+    range: RangeInclusive<T>,
+    // step: &T
+) where
+    T: egui::emath::Numeric,
+{
+    property_row(ui, w, label, |ui| {
+        ui.add_sized(
+            egui::vec2(w[1] - 50.0, ui.spacing().interact_size.y),
+            egui::Slider::new(value, range)
+                .handle_shape(egui::style::HandleShape::Circle)
+                .trailing_fill(true)
+        );
+    });
+}
+
+pub fn property_dropdown<T>(
+    ui: &mut egui::Ui,
+    w: egui::Vec2,
+    tab: &mut MonoTab,
+    label: &str,
+    value: &mut T,
+) where
+    T: IntoEnumIterator + Copy + PartialEq + std::fmt::Debug,
+{
+    property_row(ui, w, label, |ui| {
+        egui::ComboBox::from_id_salt(format!("Combobox_{}_{}", label.replace(" ", "") ,tab.id))
+            .selected_text(format!("{:?}", value))
+            .width(ui.available_width())
+            .show_ui(ui, |ui| {
+                for v in T::iter() {
+                    ui.selectable_value(value, v, format!("{:?}", v));
+                }
+            });
+    });
+}
+
+pub fn property_checkbox(
+    ui: &mut egui::Ui,
+    w: egui::Vec2,
+    label: &str,
+    value: &mut bool,
+) {
+    property_row(ui, w, label, |ui| {
+        ui.checkbox(value, "");
+    });
+}
+
+
+
+// pub fn combined_property_row<F>(
+//     ui: &mut egui::Ui,
+//     w: egui::Vec2,
+//     label: &str,
+//     contents: F
+// ) 
+// where
+//     F: FnOnce(&mut egui::Ui)
+// {
+//     const R_PADDING: f32 = 10.0;
+//     let row_h = ui.spacing().interact_size.y;
+
+//     let (left_rect, _) =
+//         ui.allocate_exact_size(egui::vec2(w[0] - R_PADDING, row_h), egui::Sense::hover());
+
+//     let font_id = egui::TextStyle::Body.resolve(ui.style());
+//     let text_color = ui.style().visuals.text_color();
+
+//     ui.painter().text(
+//         left_rect.right_center() - egui::vec2(2.0, 0.0),
+//         egui::Align2::RIGHT_CENTER,
+//         label,
+//         font_id,
+//         text_color,
+//     );
+
+//     let right_rect = egui::vec2((w[1] - R_PADDING).max(0.0), row_h);
+//     ui.allocate_ui(right_rect, |ui| {
+//         ui.vertical(|ui| {
+//             contents(ui);
+//         })
+//     });
+
+//     ui.end_row();
+// }
+
+
+// pub fn property_checkbox(
+//     ui: &mut egui::Ui,
+//     value: &mut bool,
+//     label: &str
+// ) {
+//     ui.checkbox(value, label);
+// }

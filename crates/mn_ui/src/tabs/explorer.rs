@@ -3,7 +3,7 @@ use bevy::platform::collections::HashMap;
 use bevy_egui::egui::{self};
 use mn_core::{MonoTab, icons::Icon};
 
-use crate::widgets::sidebar_panel::icon_sidebar_panel; // Import the function above
+use crate::widgets::sidebar_panel::sidebar_panel;
 
 pub fn show(
     ui: &mut egui::Ui,
@@ -11,7 +11,6 @@ pub fn show(
     icon_textures: &HashMap<mn_core::icons::Icon, bevy_egui::egui::TextureId>,
     theme: &ThemeResource,
 ) {
-    // 1. Define the icons you want for THIS specific tab
     let my_icons: [Icon; 5] = [
         Icon::TabExplorerAssets,
         Icon::TabExplorerGroups,
@@ -20,17 +19,14 @@ pub fn show(
         Icon::TabExplorerViews,
     ];
 
-    // 2. Call the reusable widget
-    // We pass `tab.id` as the unique ID source so state is saved per tab
-    icon_sidebar_panel(
+    sidebar_panel(
         ui,
         tab.id,
         icon_textures,
         theme,
         &my_icons,
-        Icon::TabPropertyTools, // Default selection
+        Icon::TabExplorerAssets,
         |ui, selected_icon| {
-            // 3. Define the content logic here
             match selected_icon {
                 Icon::TabExplorerAssets => {
                     ui.label("Assets");
@@ -47,7 +43,6 @@ pub fn show(
                 Icon::TabExplorerViews => {
                     ui.label("Views");
                 }
-                // Handle others...
                 _ => {
                     ui.label(format!("Not implemented: {:?}", selected_icon));
                 }

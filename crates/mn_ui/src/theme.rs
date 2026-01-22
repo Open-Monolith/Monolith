@@ -156,7 +156,6 @@ impl ThemeResource {
             egui::TextStyle::Small,
             egui::FontId::proportional((values.label_font_size * 0.85).max(8.0)),
         );
-        // Monospace used for numeric fields — set separately so numbers look consistent
         style.text_styles.insert(
             egui::TextStyle::Monospace,
             egui::FontId::monospace(values.numeric_font_size),
@@ -211,18 +210,15 @@ impl ThemeResource {
 }
 
  
-// Startup system call
 pub fn configure_theme_startup(mut contexts: bevy_egui::EguiContexts, mut commands: Commands) {
     if let Ok(ctx) = contexts.ctx_mut() {
-        // build default resource and apply to ctx
 
         let theme_res = ThemeResource::default();
-
+        
         theme_res.apply_to_ctx(&ctx);
 
         setup_fonts(&ctx);
 
-        // commands.insert_resource(theme_res); // init at lib cause it would crash without it. this line simply overwrites
     }
 }
 
@@ -231,18 +227,22 @@ pub fn configure_theme_startup(mut contexts: bevy_egui::EguiContexts, mut comman
 pub fn setup_fonts(ctx: &egui::Context) {
     let mut fonts: egui::FontDefinitions = egui::FontDefinitions::default();
     const FONT_NAME: &str = "Inter";
+    
+    let mut font_data = egui::FontData::from_static(include_bytes!(
+        "../../mn_app/assets/ui/fonts/Inter-Light-4.1.ttf"
+    ));
 
-    fonts.font_data.insert(
-        FONT_NAME.to_owned(),
-        std::sync::Arc::new(egui::FontData::from_static(include_bytes!(
-            "../../mn_app/assets/ui/fonts/Inter-Light-4.1.ttf"
-        ))),
-    );
+    font_data.tweak = egui::FontTweak {
+        scale: 1.0,
+        y_offset_factor: 0.0,
+        y_offset: 0.0,
+    };
+    
+    fonts.font_data.insert(FONT_NAME.to_owned(), std::sync::Arc::new(font_data));
 
     fonts.families.get_mut(&egui::FontFamily::Proportional).unwrap()
-    .insert(0, FONT_NAME.to_owned());
+        .insert(0, FONT_NAME.to_owned());
 
-    // Put my font as last fallback for monospace:
     fonts.families.get_mut(&egui::FontFamily::Monospace).unwrap()
         .push(FONT_NAME.to_owned());
 

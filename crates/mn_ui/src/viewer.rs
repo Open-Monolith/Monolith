@@ -23,10 +23,14 @@ impl TabViewer for MyTabViewer<'_> {
     }
 
     fn scroll_bars(&self, _tab: &Self::Tab) -> [bool; 2] {
-        [true, true]
+        [false, true]
     }
 
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
+        
+
+        ui.set_min_width(250.0);
+        
         let tabkind_icon = |kind: &TabKind| -> &Icon {
             match kind {
                 TabKind::Viewport => &Icon::TabViewport,
