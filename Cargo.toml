@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = [
+members = ["crates/misc",
     "crates/mn_app",
     "crates/mn_core",
     "crates/mn_db",
