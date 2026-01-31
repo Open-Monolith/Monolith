@@ -4,14 +4,14 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-bevy = "0.17.3"
-bevy_egui = "0.38.1"
+bevy = "0.18.0"
+bevy_egui = "0.39.0"
 egui_dock = "0.18.0"
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 strum = "0.27.2"
 strum_macros = "0.27.2"
+uuid = "1.20.0"
 wgpu-types = "28.0.0"
-
 
 [features]
 # 1. By default, enable the 'dev' feature (Fast Compile)

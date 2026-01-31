@@ -10,36 +10,38 @@ use bevy::pbr::{StandardMaterial, MeshMaterial3d};
 use bevy_egui::{EguiGlobalSettings, EguiPlugin, PrimaryEguiContext};
 
 use mn_core::{AppWindowCommand, DockData}; // project-local: I could not validate these
+use crate::camera_controls::TabViewportCamera;
+use bevy::asset::AssetPlugin;
 
 use std::collections::HashSet;
 
-#[derive(Component)]
-struct TabViewportCamera {
-    pub tab_id: u32,
-}
+pub mod camera_controls;
+pub mod world_grid;
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.25, 0.25, 0.25)))
         .add_plugins(
-            DefaultPlugins.set(bevy::window::WindowPlugin {
-                primary_window: Some(Window {
-                    title: "Monolith BIM".into(),
-                    decorations: false,
-                    position: WindowPosition::Centered(MonitorSelection::Primary),
+            DefaultPlugins
+                .set(bevy::window::WindowPlugin {
+                    primary_window: Some(Window {
+                        title: "Monolith BIM".into(),
+                        decorations: false,
+                        position: WindowPosition::Centered(MonitorSelection::Primary),
+                        ..default()
+                    }),
                     ..default()
                 }),
-                ..default()
-            })
         )
-        .add_plugins(EguiPlugin::default())
+        .add_plugins(EguiPlugin::default())          // keep this (mn_ui expects it)
         .add_plugins(mn_ui::MonolithUIPlugin)
+        .add_plugins(world_grid::WorldGridPlugin)
+        .add_plugins(crate::camera_controls::BimCameraControlsPlugin)
         .add_systems(Startup, setup_system)
         .add_systems(PostUpdate, update_viewport_system)
         .add_systems(Update, windows_control_system)
         .run();
 }
-
 fn windows_control_system(
     mut reader: MessageReader<AppWindowCommand>, // project-local message reader
     mut app_exit_events: MessageWriter<AppExit>,
@@ -103,7 +105,7 @@ fn setup_system(
 
     // spawn a simple 3D sphere in render layer 0
     commands.spawn((
-        Mesh3d(meshes.add(Sphere::default().mesh().ico(5).unwrap())),
+        Mesh3d(meshes.add(Cuboid::from_length(1.0))),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: Color::srgb(0.8, 0.2, 0.2).into(),
             ..Default::default()
@@ -173,11 +175,12 @@ fn update_viewport_system(
             }
         } else {
             // create a new Camera3d for this tab (perspective)
-            let proj = Projection::from(PerspectiveProjection {
+            let proj: Projection = Projection::from(PerspectiveProjection {
                 fov: 60f32.to_radians(),
                 aspect_ratio: phys_w as f32 / phys_h as f32,
                 near: 0.1,
                 far: 10000.0,
+                 ..default()
             });
 
             let transform = Transform::from_xyz(0.0, 0.0, 3.0).looking_at(Vec3::ZERO, Vec3::Y);
@@ -194,6 +197,7 @@ fn update_viewport_system(
                 GlobalTransform::default(),
                 RenderLayers::layer(0),
                 TabViewportCamera { tab_id },
+                crate::camera_controls::BimOrbitCamera::default(),
             ));
         }
     }
