@@ -37,7 +37,7 @@ impl Default for BimOrbitCamera {
             orbit_sensitivity: 0.005,
             pan_sensitivity: 0.002,
             zoom_sensitivity: 0.15,
-            min_distance: 0.2,
+            min_distance: 0.01,
             max_distance: 100_000.0,
         }
     }

@@ -1,5 +1,6 @@
 #import bevy_pbr::forward_io::VertexOutput
 #import bevy_pbr::mesh_bindings::mesh
+#import bevy_pbr::mesh_view_bindings as view_bindings
 
 struct GridParams {
     minor_spacing: f32,
@@ -31,21 +32,19 @@ fn get_params(in: VertexOutput) -> GridParams {
 }
 
 // Pixel-constant grid line thickness.
-// thickness_px is in *screen pixels*, not world units.
 fn grid_line_px(coord: f32, spacing: f32, thickness_px: f32) -> f32 {
     let u = coord / spacing;
 
-    // distance to the nearest integer grid line (0 at the line)
+    // distance to nearest integer line (0 at line)
     let f = fract(u);
     let d = min(f, 1.0 - f);
 
     // u-space change across ~1 pixel
     let du = fwidth(u);
 
-    // convert desired pixel thickness to u-space thickness
+    // convert pixel thickness to u-space
     let t = thickness_px * du;
 
-    // anti-aliased line
     return 1.0 - smoothstep(t, t + du, d);
 }
 
@@ -54,15 +53,18 @@ fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
     let p = in.world_position.xz;
     let params = get_params(in);
 
+    // Camera world position from view matrix inverse (world_from_view).
+    let cam_world = view_bindings::view.world_from_view[3].xyz;
+    let cam_xz = cam_world.xz;
+
     // Minor grid
     let minor = max(
         grid_line_px(p.x, params.minor_spacing, params.minor_thickness_px),
         grid_line_px(p.y, params.minor_spacing, params.minor_thickness_px)
     );
 
-    // Axis lines: X axis is Z=0, Z axis is X=0
-    // Pixel-constant axis thickness:
-    let dx = fwidth(p.x); // world units per pixel approx
+    // Axis lines at world X=0 and Z=0 (Blender-like)
+    let dx = fwidth(p.x);
     let dz = fwidth(p.y);
 
     let z_axis = 1.0 - smoothstep(
@@ -77,8 +79,8 @@ fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
         abs(p.y)
     );
 
-    // Fade based on distance from origin (Blender-like “origin grid focus”)
-    let r = length(p);
+    // Fade from CAMERA (so the grid stays visible anywhere you pan).
+    let r = length(p - cam_xz);
     let fade = 1.0 - smoothstep(params.fade_distance * 0.7, params.fade_distance, r);
 
     // Colors
@@ -86,7 +88,6 @@ fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
     let x_col     = vec3<f32>(0.95, 0.25, 0.25); // X axis (red)
     let z_col     = vec3<f32>(0.25, 0.45, 0.95); // Z axis (blue)
 
-    // Weights (tweak to taste)
     let w_minor = minor * 0.22;
     let w_x     = x_axis * 0.90;
     let w_z     = z_axis * 0.90;
