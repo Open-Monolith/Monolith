@@ -9,7 +9,8 @@ use bevy::{
 use bevy::pbr::{StandardMaterial, MeshMaterial3d};
 use bevy_egui::{EguiGlobalSettings, EguiPlugin, PrimaryEguiContext};
 
-use mn_core::{AppWindowCommand, DockData}; // project-local: I could not validate these
+use mn_core::{AppWindowCommand, DockData, element::ElementId};
+use uuid::Uuid;
 use crate::camera_controls::TabViewportCamera;
 use bevy::asset::AssetPlugin;
 
@@ -17,6 +18,7 @@ use std::collections::HashSet;
 
 pub mod camera_controls;
 pub mod world_grid;
+pub mod selection;
 
 fn main() {
     App::new()
@@ -37,7 +39,7 @@ fn main() {
         .add_plugins(mn_ui::MonolithUIPlugin)
         .add_plugins(world_grid::WorldGridPlugin)
         .add_plugins(crate::camera_controls::BimCameraControlsPlugin)
-        .add_systems(Startup, setup_system)
+        .add_systems(Startup, (setup_system, test_system))
         .add_systems(PostUpdate, update_viewport_system)
         .add_systems(Update, windows_control_system)
         .run();
@@ -208,4 +210,23 @@ fn update_viewport_system(
             commands.entity(entity).despawn();
         }
     }
+}
+
+fn test_system(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>
+) {
+    let mesh = meshes.add(Cuboid::new(1.0, 1.0, 1.0));
+    let material = materials.add(StandardMaterial::default());
+
+    commands.spawn((
+        ElementId(Uuid::new_v4()),
+        Name::new("Element 1"),
+        Transform::from_xyz(2., 2., 0.),
+        GlobalTransform::default(),
+
+        Mesh3d(mesh),
+        MeshMaterial3d(material)
+    ));
 }
