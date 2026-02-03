@@ -1,44 +1,51 @@
-use bevy::{
-    camera::{CameraOutputMode, ClearColorConfig, Projection, PerspectiveProjection, Viewport, visibility::RenderLayers},
-    prelude::*,
-    render::render_resource::BlendState,
-    window::{PrimaryWindow, WindowMode, WindowPosition, MonitorSelection},
-    mesh::Mesh3d,
-    platform::collections::HashMap
+// external crates
+use std::collections::HashSet;
+use uuid::Uuid;
+
+// bevy
+use bevy::prelude::*;
+use bevy::pbr::{MeshMaterial3d, StandardMaterial};
+use bevy::mesh::Mesh3d;
+use bevy::camera::{
+    CameraOutputMode, ClearColorConfig, PerspectiveProjection, Projection, Viewport,
+    visibility::RenderLayers,
 };
-use bevy::pbr::{StandardMaterial, MeshMaterial3d};
+use bevy::render::render_resource::BlendState;
+use bevy::window::{MonitorSelection, PrimaryWindow, WindowMode, WindowPosition};
+use bevy::platform::collections::HashMap;
+
+// bevy_egui
 use bevy_egui::{EguiGlobalSettings, EguiPlugin, PrimaryEguiContext};
 
-use mn_core::{AppWindowCommand, DockData, element::ElementId};
-use uuid::Uuid;
+// local crate modules
 use crate::camera_controls::TabViewportCamera;
-use bevy::asset::AssetPlugin;
+use crate::selection::Selectable;
 
-use std::collections::HashSet;
+// workspace crate
+use mn_core::{AppWindowCommand, DockData, element::ElementId};
 
+// modules
 pub mod camera_controls;
-pub mod world_grid;
 pub mod selection;
+pub mod world_grid;
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.25, 0.25, 0.25)))
-        .add_plugins(
-            DefaultPlugins
-                .set(bevy::window::WindowPlugin {
-                    primary_window: Some(Window {
-                        title: "Monolith BIM".into(),
-                        decorations: false,
-                        position: WindowPosition::Centered(MonitorSelection::Primary),
-                        ..default()
-                    }),
-                    ..default()
-                }),
-        )
-        .add_plugins(EguiPlugin::default())          // keep this (mn_ui expects it)
+        .add_plugins(DefaultPlugins.set(bevy::window::WindowPlugin {
+            primary_window: Some(Window {
+                title: "Monolith BIM".into(),
+                decorations: false,
+                position: WindowPosition::Centered(MonitorSelection::Primary),
+                ..default()
+            }),
+            ..default()
+        }))
+        .add_plugins(EguiPlugin::default()) // keep this (mn_ui expects it)
         .add_plugins(mn_ui::MonolithUIPlugin)
         .add_plugins(world_grid::WorldGridPlugin)
         .add_plugins(crate::camera_controls::BimCameraControlsPlugin)
+        .add_plugins(crate::selection::SelectionPlugin)
         .add_systems(Startup, (setup_system, test_system))
         .add_systems(PostUpdate, update_viewport_system)
         .add_systems(Update, windows_control_system)
@@ -81,12 +88,7 @@ fn windows_control_system(
     }
 }
 
-fn setup_system(
-    mut commands: Commands,
-    mut egui_global_settings: ResMut<EguiGlobalSettings>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
+fn setup_system(mut commands: Commands, mut egui_global_settings: ResMut<EguiGlobalSettings>) {
     // disable automatic single primary context; we'll create it manually
     egui_global_settings.auto_create_primary_context = false;
 
@@ -103,18 +105,6 @@ fn setup_system(
             ..Default::default()
         },
         RenderLayers::layer(1),
-    ));
-
-    // spawn a simple 3D sphere in render layer 0
-    commands.spawn((
-        Mesh3d(meshes.add(Cuboid::from_length(1.0))),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: Color::srgb(0.8, 0.2, 0.2).into(),
-            ..Default::default()
-        })),
-        Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
-        GlobalTransform::default(),
-        RenderLayers::layer(0),
     ));
 }
 
@@ -182,13 +172,15 @@ fn update_viewport_system(
                 aspect_ratio: phys_w as f32 / phys_h as f32,
                 near: 0.1,
                 far: 10000.0,
-                 ..default()
+                ..default()
             });
 
             let transform = Transform::from_xyz(0.0, 0.0, 3.0).looking_at(Vec3::ZERO, Vec3::Y);
 
             commands.spawn((
                 Camera3d::default(),
+                MeshPickingCamera,
+                Pickable::default(),
                 Camera {
                     order: -(tab_id as isize),
                     viewport: Some(viewport),
@@ -215,18 +207,44 @@ fn update_viewport_system(
 fn test_system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>
+    mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     let mesh = meshes.add(Cuboid::new(1.0, 1.0, 1.0));
-    let material = materials.add(StandardMaterial::default());
+    let material = materials.add(StandardMaterial {
+        base_color: Color::srgb(0.2, 0.8, 0.2),
+        ..default()
+    });
+
+    commands
+        .spawn((
+            ElementId(Uuid::new_v4()),
+            Name::new("Element 1"),
+            Transform::from_xyz(2., 2., 0.),
+            GlobalTransform::default(),
+            Mesh3d(mesh),
+            MeshMaterial3d(material.clone()),
+            RenderLayers::layer(0),
+            Selectable,
+        ));
+    commands
+        .spawn((
+            ElementId(Uuid::new_v4()),
+            Name::new("Element 1=2"),
+            Transform::from_xyz(0., 0., 0.),
+            GlobalTransform::default(),
+            Mesh3d(meshes.add(Cuboid::from_length(1.0))),
+            MeshMaterial3d(material.clone()),
+            RenderLayers::layer(0),
+            Selectable,
+        ));
 
     commands.spawn((
-        ElementId(Uuid::new_v4()),
-        Name::new("Element 1"),
-        Transform::from_xyz(2., 2., 0.),
-        GlobalTransform::default(),
-
-        Mesh3d(mesh),
-        MeshMaterial3d(material)
+        DirectionalLight {
+            illuminance: 10_000.0,
+            shadows_enabled: false,
+            ..default()
+        },
+        Transform::from_xyz(5.0, 10.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+        RenderLayers::layer(0),
     ));
 }
