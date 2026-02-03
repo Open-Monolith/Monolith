@@ -7,6 +7,7 @@ use bevy::window::PrimaryWindow;
 use mn_core::DockData;
 
 use crate::camera_controls::TabViewportCamera;
+use crate::camera_controls::BimOrbitCamera;
 
 pub struct SelectionPlugin;
 
@@ -59,7 +60,7 @@ fn select_with_left_click(
     mouse: Res<ButtonInput<MouseButton>>,
     mut ray_cast: MeshRayCast,
 
-    cams: Query<(&Camera, &GlobalTransform, &TabViewportCamera)>,
+    cams: Query<(&Camera, &GlobalTransform, &TabViewportCamera, &mut BimOrbitCamera)>,
     selectables: Query<(), With<Selectable>>,
     exists: Query<(), ()>,
 
@@ -78,7 +79,8 @@ fn select_with_left_click(
     };
 
     let mut cam_hit = None;
-    for (cam, cam_tf, tag) in &cams {
+    let mut bimCam_hit: Option<&mut BimOrbitCamera> = None;
+    for (cam, cam_tf, tag, _) in &cams {
         if tag.tab_id == tab_id {
             cam_hit = Some((cam, cam_tf));
             break;
@@ -91,6 +93,7 @@ fn select_with_left_click(
         return;
     };
 
+    
     let filter = |e: Entity| selectables.contains(e);
     let settings = MeshRayCastSettings::default()
         .with_filter(&filter)

@@ -28,6 +28,7 @@ use mn_core::{AppWindowCommand, DockData, element::ElementId};
 pub mod camera_controls;
 pub mod selection;
 pub mod world_grid;
+pub mod viewport_overlay;
 
 fn main() {
     App::new()
@@ -46,6 +47,7 @@ fn main() {
         .add_plugins(world_grid::WorldGridPlugin)
         .add_plugins(crate::camera_controls::BimCameraControlsPlugin)
         .add_plugins(crate::selection::SelectionPlugin)
+        .add_plugins(viewport_overlay::ViewportOverlayPlugin)
         .add_systems(Startup, (setup_system, test_system))
         .add_systems(PostUpdate, update_viewport_system)
         .add_systems(Update, windows_control_system)
@@ -192,6 +194,7 @@ fn update_viewport_system(
                 RenderLayers::layer(0),
                 TabViewportCamera { tab_id },
                 crate::camera_controls::BimOrbitCamera::default(),
+                // crate::camera_controls::DefaultPivot(Vec3::ZERO),
             ));
         }
     }

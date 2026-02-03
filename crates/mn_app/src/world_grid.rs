@@ -58,7 +58,7 @@ impl Material for WorldGridMaterial {
         self.alpha_mode
     }
 
-    // ✅ Option 2: disable backface culling in the actual render pipeline.
+    //  Option 2: disable backface culling in the actual render pipeline.
     fn specialize(
         _pipeline: &MaterialPipeline,
         descriptor: &mut RenderPipelineDescriptor,
