@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use std::sync::LazyLock;
 use bevy::platform::collections::HashMap;
+use strum_macros::{EnumIter, Display};
 
 #[derive(Resource, Default)]
 pub struct IconTextures {
@@ -42,6 +43,18 @@ pub enum Icon {
     TabExplorerSchedules,
     TabExplorerSheets,
     TabExplorerViews,
+
+    // Tools Modify
+    ToolModifyAlign,
+    ToolModifyCut,
+    ToolModifyMirror,
+    ToolModifyMove,
+    ToolModifyRotate,
+    ToolModifySelect,
+    ToolModifyTrim,
+
+    // Tools Architect
+    ToolArchitectWall,
 }
 
 pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| {
@@ -79,6 +92,18 @@ pub static ICON_PATHS: LazyLock<HashMap<Icon, &'static str>> = LazyLock::new(|| 
         (Icon::TabProperty, "ui/icons/tab/property/property.png"),
         (Icon::TabViewport, "ui/icons/tab/viewport/viewport.png"),
         (Icon::TabAssetBrowser, "ui/icons/tab/asset_browser/asset_browser.png"),
+
+        // Tool Modify
+        (Icon::ToolModifyAlign, "ui/icons/tool_modify/align/align.png"),
+        (Icon::ToolModifyCut, "ui/icons/tool_modify/cut/cut.png"),
+        (Icon::ToolModifyMirror, "ui/icons/tool_modify/mirror/mirror.png"),
+        (Icon::ToolModifyMove, "ui/icons/tool_modify/move/move.png"),
+        (Icon::ToolModifyRotate, "ui/icons/tool_modify/rotate/rotate.png"),
+        (Icon::ToolModifySelect, "ui/icons/tool_modify/select/select.png"),
+        (Icon::ToolModifyTrim, "ui/icons/tool_modify/trim/trim.png"),
+        
+        // Tool Architect
+        (Icon::ToolArchitectWall, "ui/icons/tool_architect/wall/wall.png"),
     ])
 });
 
