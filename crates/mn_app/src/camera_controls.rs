@@ -36,7 +36,7 @@ impl Default for BimOrbitCamera {
             distance: 6.0,
             orbit_sensitivity: 0.005,
             pan_sensitivity: 0.002,
-            zoom_sensitivity: 0.15,
+            zoom_sensitivity: 0.01,
             min_distance: 0.01,
             max_distance: 100_000.0,
         }
@@ -109,7 +109,7 @@ fn bim_camera_controls_system(
         }
 
         // Orbit or Pan (MMB drag)
-        if mouse_buttons.pressed(MouseButton::Middle) {
+        if mouse_buttons.pressed(MouseButton::Middle) || keys.pressed(KeyCode::Space) {
             let delta = mouse_motion.delta;
 
             let rot = Quat::from_rotation_y(cam.yaw) * Quat::from_rotation_x(cam.pitch);
