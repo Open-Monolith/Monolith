@@ -6,6 +6,8 @@ use strum_macros::{EnumIter, Display};
 pub mod icons;
 pub mod enums;
 pub mod element;
+pub mod tool;
+pub mod primitives;
 
 #[derive(EnumIter, Display, Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TabKind {

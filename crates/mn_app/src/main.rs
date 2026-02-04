@@ -1,5 +1,6 @@
 // external crates
 use std::collections::HashSet;
+use mn_core::tool::ToolRegistry;
 use uuid::Uuid;
 
 // bevy
@@ -15,7 +16,7 @@ use bevy::window::{MonitorSelection, PrimaryWindow, WindowMode, WindowPosition};
 use bevy::platform::collections::HashMap;
 
 // bevy_egui
-use bevy_egui::{EguiGlobalSettings, EguiPlugin, PrimaryEguiContext};
+use bevy_egui::{EguiGlobalSettings, EguiPlugin, EguiStartupSet, PrimaryEguiContext};
 
 // local crate modules
 use crate::camera_controls::TabViewportCamera;
@@ -33,6 +34,7 @@ pub mod viewport_overlay;
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.25, 0.25, 0.25)))
+        .init_resource::<ToolRegistry>()
         .add_plugins(DefaultPlugins.set(bevy::window::WindowPlugin {
             primary_window: Some(Window {
                 title: "Monolith BIM".into(),
@@ -48,7 +50,7 @@ fn main() {
         .add_plugins(crate::camera_controls::BimCameraControlsPlugin)
         .add_plugins(crate::selection::SelectionPlugin)
         .add_plugins(viewport_overlay::ViewportOverlayPlugin)
-        .add_systems(Startup, (setup_system, test_system))
+        .add_systems(Startup, (setup_system, test_system).before(EguiStartupSet::InitContexts))
         .add_systems(PostUpdate, update_viewport_system)
         .add_systems(Update, windows_control_system)
         .run();

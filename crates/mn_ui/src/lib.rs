@@ -1,12 +1,12 @@
 use bevy::prelude::*;
 use crate::dock_state::DockStateResource;
-use bevy_egui::EguiPrimaryContextPass; // <- correct schedule token
+use bevy_egui::{EguiStartupSet}; // <- correct schedule token
 
 mod viewer;
 mod systems;
 mod dock_state;
 mod widgets;
-mod theme;
+pub mod theme;
 mod resize;
 mod tabs;
 pub mod icons;
@@ -22,10 +22,10 @@ impl Plugin for MonolithUIPlugin {
            .init_resource::<DockStateResource>()
            .init_resource::<mn_core::DockData>()
            .init_resource::<mn_core::icons::IconTextures>()
-           .add_systems(EguiPrimaryContextPass, (
+           .add_systems(Startup, (
                 theme::configure_theme_startup,
                 icons::setup_icon_textures
-           ))
+           ).after(EguiStartupSet::InitContexts))
            .add_systems(bevy_egui::EguiPrimaryContextPass, systems::ui_system);
     }
 }

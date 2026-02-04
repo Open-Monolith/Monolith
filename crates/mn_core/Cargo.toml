@@ -7,6 +7,7 @@ edition = "2024"
 bevy = "0.18.0"
 bevy_egui = "0.39.0"
 egui_dock = "0.18.0"
+enum-map = "2.7.3"
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 strum = "0.27.2"
 strum_macros = "0.27.2"

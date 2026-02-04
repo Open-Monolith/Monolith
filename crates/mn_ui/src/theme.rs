@@ -210,7 +210,7 @@ impl ThemeResource {
 }
 
  
-pub fn configure_theme_startup(mut contexts: bevy_egui::EguiContexts, mut commands: Commands) {
+pub fn configure_theme_startup(mut contexts: bevy_egui::EguiContexts) {
     if let Ok(ctx) = contexts.ctx_mut() {
 
         let theme_res = ThemeResource::default();
