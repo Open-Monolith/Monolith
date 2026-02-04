@@ -1,6 +1,5 @@
+
 // external crates
-use std::collections::HashSet;
-use mn_core::tool::ToolRegistry;
 use uuid::Uuid;
 
 // bevy
@@ -8,33 +7,41 @@ use bevy::prelude::*;
 use bevy::pbr::{MeshMaterial3d, StandardMaterial};
 use bevy::mesh::Mesh3d;
 use bevy::camera::{
-    CameraOutputMode, ClearColorConfig, PerspectiveProjection, Projection, Viewport,
-    visibility::RenderLayers,
+    CameraOutputMode, ClearColorConfig, visibility::RenderLayers,
 };
 use bevy::render::render_resource::BlendState;
-use bevy::window::{MonitorSelection, PrimaryWindow, WindowMode, WindowPosition};
-use bevy::platform::collections::HashMap;
+use bevy::window::{MonitorSelection, WindowPosition};
 
 // bevy_egui
 use bevy_egui::{EguiGlobalSettings, EguiPlugin, EguiStartupSet, PrimaryEguiContext};
+use bevy::transform::TransformSystems;
 
-// local crate modules
-use crate::camera_controls::TabViewportCamera;
+// local crate
 use crate::selection::Selectable;
+use crate::commands::handle_viewport_commands;
+use crate::viewport::update_viewport_system;
+use crate::window::windows_control_system;
 
 // workspace crate
-use mn_core::{AppWindowCommand, DockData, element::ElementId};
+use mn_core::{DockData, element::ElementId};
+use mn_core::tool::ToolRegistry;
+use mn_core::commands::{ActiveTool, TwoClickRectState};
 
 // modules
-pub mod camera_controls;
-pub mod selection;
-pub mod world_grid;
-pub mod viewport_overlay;
+mod camera_controls;
+mod selection;
+mod world_grid;
+mod tools;
+mod commands;
+mod viewport;
+mod window;
 
 fn main() {
     App::new()
         .insert_resource(ClearColor(Color::srgb(0.25, 0.25, 0.25)))
         .init_resource::<ToolRegistry>()
+        .init_resource::<ActiveTool>()
+        .init_resource::<TwoClickRectState>()
         .add_plugins(DefaultPlugins.set(bevy::window::WindowPlugin {
             primary_window: Some(Window {
                 title: "Monolith BIM".into(),
@@ -44,52 +51,21 @@ fn main() {
             }),
             ..default()
         }))
-        .add_plugins(EguiPlugin::default()) // keep this (mn_ui expects it)
+        
+        // Plugins
+        .add_plugins(EguiPlugin::default())
         .add_plugins(mn_ui::MonolithUIPlugin)
         .add_plugins(world_grid::WorldGridPlugin)
         .add_plugins(crate::camera_controls::BimCameraControlsPlugin)
         .add_plugins(crate::selection::SelectionPlugin)
-        .add_plugins(viewport_overlay::ViewportOverlayPlugin)
+        .add_plugins(crate::tools::architect_wall::ArchitectWallPlugin)
+        // Systems
         .add_systems(Startup, (setup_system, test_system).before(EguiStartupSet::InitContexts))
-        .add_systems(PostUpdate, update_viewport_system)
+        .add_systems(PostUpdate, update_viewport_system.before(TransformSystems::Propagate))
         .add_systems(Update, windows_control_system)
+        .add_systems(Update, handle_viewport_commands)
+        // .add_systems(PostUpdate, two_click_rect_system.after(TransformSystems::Propagate))
         .run();
-}
-fn windows_control_system(
-    mut reader: MessageReader<AppWindowCommand>, // project-local message reader
-    mut app_exit_events: MessageWriter<AppExit>,
-    mut window_query: Query<&mut Window, With<PrimaryWindow>>,
-) {
-    // get the primary window (Single param alternative works too, but this mirrors your code)
-    let mut window = match window_query.single_mut() {
-        Ok(w) => w,
-        Err(_) => return,
-    };
-
-    for cmd in reader.read() {
-        match cmd {
-            AppWindowCommand::Shutdown => {
-                app_exit_events.write(AppExit::Success);
-            }
-            AppWindowCommand::ToggleMaximize => {
-                if window.mode != WindowMode::Windowed {
-                    window.mode = WindowMode::Windowed;
-                } else {
-                    window.mode = WindowMode::BorderlessFullscreen(MonitorSelection::Primary);
-                }
-            }
-            AppWindowCommand::Minimize => {
-                window.set_minimized(true);
-            }
-            AppWindowCommand::StartMove => {
-                window.start_drag_move();
-            }
-            AppWindowCommand::StartResize(octant) => {
-                window.mode = WindowMode::Windowed;
-                window.start_drag_resize(*octant);
-            }
-        }
-    }
 }
 
 fn setup_system(mut commands: Commands, mut egui_global_settings: ResMut<EguiGlobalSettings>) {
@@ -110,103 +86,6 @@ fn setup_system(mut commands: Commands, mut egui_global_settings: ResMut<EguiGlo
         },
         RenderLayers::layer(1),
     ));
-}
-
-/// Update cameras that render to each dock viewport (one Camera3d per viewport/tab).
-fn update_viewport_system(
-    dock_data: Res<DockData>,
-    window: Single<&Window, With<PrimaryWindow>>,
-    mut commands: Commands,
-    existing_tagged: Query<(Entity, &TabViewportCamera)>,
-    mut camera_query: Query<&mut Camera>,
-) {
-    // Build a map of existing tab_id -> entity
-    let mut existing_map: HashMap<u32, Entity> = HashMap::new();
-    for (entity, tag) in existing_tagged.iter() {
-        existing_map.insert(tag.tab_id, entity);
-    }
-
-    // Which tab ids we need this frame
-    let tab_ids_needed: HashSet<u32> = dock_data.viewports.keys().copied().collect();
-
-    // Window physical size and scale
-    let win_width = window.physical_width();
-    let win_height = window.physical_height();
-    let scale_factor = window.scale_factor();
-
-    for (&tab_id, &(x, y, w, h)) in dock_data.viewports.iter() {
-        // Convert logical egui coordinates -> physical pixels
-        let phys_x: u32 = (x * scale_factor).max(0.0) as u32;
-        let phys_y: u32 = (y * scale_factor).max(0.0) as u32;
-        let mut phys_w: u32 = (w * scale_factor).max(0.0) as u32;
-        let mut phys_h: u32 = (h * scale_factor).max(0.0) as u32;
-
-        // clamp to window
-        if phys_x + phys_w > win_width {
-            phys_w = win_width.saturating_sub(phys_x);
-        }
-        if phys_y + phys_h > win_height {
-            phys_h = win_height.saturating_sub(phys_y);
-        }
-        if phys_w == 0 || phys_h == 0 {
-            continue;
-        }
-
-        let viewport = Viewport {
-            physical_position: UVec2::new(phys_x, phys_y),
-            physical_size: UVec2::new(phys_w, phys_h),
-            ..default()
-        };
-
-        if let Some(&entity) = existing_map.get(&tab_id) {
-            // update existing camera's viewport & order
-            if let Ok(mut cam) = camera_query.get_mut(entity) {
-                cam.viewport = Some(viewport);
-                cam.is_active = true;
-                // Camera.order is an `isize` — using negative values to create unique ordering is fine.
-                cam.order = -(tab_id as isize);
-            } else {
-                // camera missing? despawn the tagged entity (it may have been partially destroyed)
-                commands.entity(entity).despawn();
-            }
-        } else {
-            // create a new Camera3d for this tab (perspective)
-            let proj: Projection = Projection::from(PerspectiveProjection {
-                fov: 60f32.to_radians(),
-                aspect_ratio: phys_w as f32 / phys_h as f32,
-                near: 0.1,
-                far: 10000.0,
-                ..default()
-            });
-
-            let transform = Transform::from_xyz(0.0, 0.0, 3.0).looking_at(Vec3::ZERO, Vec3::Y);
-
-            commands.spawn((
-                Camera3d::default(),
-                MeshPickingCamera,
-                Pickable::default(),
-                Camera {
-                    order: -(tab_id as isize),
-                    viewport: Some(viewport),
-                    ..default()
-                },
-                proj,
-                transform,
-                GlobalTransform::default(),
-                RenderLayers::layer(0),
-                TabViewportCamera { tab_id },
-                crate::camera_controls::BimOrbitCamera::default(),
-                // crate::camera_controls::DefaultPivot(Vec3::ZERO),
-            ));
-        }
-    }
-
-    // Despawn cameras whose tab ids are no longer present
-    for (existing_tab_id, entity) in existing_map.into_iter() {
-        if !tab_ids_needed.contains(&existing_tab_id) {
-            commands.entity(entity).despawn();
-        }
-    }
 }
 
 fn test_system(

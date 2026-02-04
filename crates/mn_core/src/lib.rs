@@ -8,6 +8,7 @@ pub mod enums;
 pub mod element;
 pub mod tool;
 pub mod primitives;
+pub mod commands;
 
 #[derive(EnumIter, Display, Debug, PartialEq, Eq, Clone, Copy)]
 pub enum TabKind {

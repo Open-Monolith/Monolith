@@ -1,25 +1,23 @@
+use crate::theme::ThemeResource;
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts, EguiPrimaryContextPass,
     egui::{self, CornerRadius},
 };
-use mn_core::{DockData, icons::Icon, tool::ToolRegistry, tool::ARCHITECT_TOOLS, tool::MODIFY_TOOLS};
-use mn_ui::theme::ThemeResource;
+use mn_core::{
+    DockData,
+    commands::ViewportCommand,
+    tool::{ARCHITECT_TOOLS, MODIFY_TOOLS, ToolRegistry},
+};
 
 const TOOL_LEN: usize = ARCHITECT_TOOLS.len() + MODIFY_TOOLS.len();
-
-#[derive(Message, Debug, Clone, Copy)]
-pub enum ViewportCommand {
-    Run(Icon, u32), // tab_id
-}
 
 pub struct ViewportOverlayPlugin;
 
 impl Plugin for ViewportOverlayPlugin {
     fn build(&self, app: &mut App) {
         app.add_message::<ViewportCommand>()
-            .add_systems(EguiPrimaryContextPass, viewport_floating_buttons_ui)
-            .add_systems(Update, handle_viewport_commands);
+            .add_systems(EguiPrimaryContextPass, viewport_floating_buttons_ui);
     }
 }
 
@@ -45,7 +43,7 @@ fn viewport_floating_buttons_ui(
         let gap = 0.8;
         let btn_h = 28.0;
         let btn_w = 70.0;
-        
+
         // total height of the stack so the area can fit them
         let total_h = TOOL_LEN as f32 * btn_h + (TOOL_LEN.saturating_sub(1) as f32) * gap;
 
@@ -74,35 +72,10 @@ fn viewport_floating_buttons_ui(
                                 )
                                 .clicked()
                             {
-                                ev.write(ViewportCommand::Run(tool_def.icon, tab_id));
+                                ev.write(ViewportCommand::Run(tool_def.id, tab_id));
                             }
                         }
                     });
             });
-    }
-}
-
-fn handle_viewport_commands(mut ev: MessageReader<ViewportCommand>) {
-    for cmd in ev.read() {
-        match *cmd {
-            ViewportCommand::Run(icon, tab_id) => {
-                // `icon` is your Icon, `tab_id` is the u32
-                match icon {
-                    Icon::ToolModifyAlign => {
-                        println!("tab_id={tab_id}");
-                    }
-                    Icon::ToolModifyCut => { /* ... */ }
-                    Icon::ToolModifyMirror => { /* ... */ }
-                    Icon::ToolModifyMove => { /* ... */ }
-                    Icon::ToolModifyRotate => { /* ... */ }
-                    Icon::ToolModifySelect => { /* ... */ }
-                    Icon::ToolModifyTrim => { /* ... */ }
-                    Icon::ToolArchitectWall => { /* ... */ }
-                    _ => {}
-                }
-
-                // if you need tab_id
-            }
-        }
     }
 }

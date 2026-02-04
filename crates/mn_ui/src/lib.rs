@@ -6,9 +6,10 @@ mod viewer;
 mod systems;
 mod dock_state;
 mod widgets;
-pub mod theme;
 mod resize;
 mod tabs;
+mod viewport_overlay;
+pub mod theme;
 pub mod icons;
 
 pub struct MonolithUIPlugin;
@@ -26,6 +27,7 @@ impl Plugin for MonolithUIPlugin {
                 theme::configure_theme_startup,
                 icons::setup_icon_textures
            ).after(EguiStartupSet::InitContexts))
-           .add_systems(bevy_egui::EguiPrimaryContextPass, systems::ui_system);
+           .add_systems(bevy_egui::EguiPrimaryContextPass, systems::ui_system)
+           .add_plugins(viewport_overlay::ViewportOverlayPlugin);
     }
 }
