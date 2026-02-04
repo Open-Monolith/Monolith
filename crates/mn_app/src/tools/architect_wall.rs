@@ -11,7 +11,7 @@ use crate::camera_controls::TabViewportCamera;
 use crate::selection::Selectable;
 
 pub const RECT_WIDTH: f32 = 0.20;
-pub const RECT_HEIGHT: f32 = 5.0;
+pub const RECT_HEIGHT: f32 = 4.0;
 
 #[derive(Component)]
 pub struct WallGhost;

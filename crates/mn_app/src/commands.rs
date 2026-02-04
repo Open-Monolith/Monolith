@@ -33,13 +33,13 @@ pub fn handle_viewport_commands(
                     ensure_wall_ghost(&mut commands, &assets, &mut ghost_ent);
                     println!("Active tool set to {tool_id:?} on tab_id={tab_id}");
                 }
-                ToolId::ModifySelect => todo!(),
-                ToolId::ModifyMove => todo!(),
-                ToolId::ModifyRotate => todo!(),
-                ToolId::ModifyAlign => todo!(),
-                ToolId::ModifyTrim => todo!(),
-                ToolId::ModifyMirror => todo!(),
-                ToolId::ModifyCut => todo!(),
+                ToolId::ModifySelect => { },
+                ToolId::ModifyMove => { },
+                ToolId::ModifyRotate => { },
+                ToolId::ModifyAlign => { },
+                ToolId::ModifyTrim => { },
+                ToolId::ModifyMirror => { },
+                ToolId::ModifyCut => { },
             },
         }
     }
