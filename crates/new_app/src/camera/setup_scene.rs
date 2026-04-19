@@ -1,5 +1,6 @@
 use bevy::camera::visibility::RenderLayers;
 use bevy::prelude::*;
+use crate::editor::selection::picking::Selectable;
 
 pub fn setup_scene(
     mut commands: Commands,
@@ -13,6 +14,7 @@ pub fn setup_scene(
             ..default()
         })),
         RenderLayers::layer(0),
+        Selectable,
     ));
 
     commands.spawn((
@@ -23,6 +25,7 @@ pub fn setup_scene(
         })),
         Transform::from_xyz(-1.25, 0.8, 0.0),
         RenderLayers::layer(0),
+        Selectable,
     ));
 
     commands.spawn((
@@ -33,6 +36,7 @@ pub fn setup_scene(
         })),
         Transform::from_xyz(1.25, 0.5, 0.0),
         RenderLayers::layer(0),
+        Selectable,
     ));
 
     commands.spawn((

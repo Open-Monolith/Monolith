@@ -14,5 +14,6 @@ fn main() {
         .add_plugins(camera::camera_plugin::AppCameraPlugin)
         .add_plugins(new_ui::UIPlugin)
         .add_plugins(selection_plugin::SelectionPlugin)
+        
         .run();
 }
