@@ -6,6 +6,8 @@ use std::collections::HashMap;
 
 use new_core::{GameViewportCamera, VisibleViewports};
 
+use crate::camera::controls::ViewportOrbitCamera;
+
 pub fn sync_viewport_cameras(
     visible_viewports: Res<VisibleViewports>,
     window: Single<&Window, With<PrimaryWindow>>,
@@ -101,6 +103,9 @@ fn spawn_viewport_camera(
     viewport: Viewport,
     aspect_ratio: f32,
 ) {
+    let eye = Vec3::new(4.0, 3.0, 6.0);
+    let target = Vec3::new(0.0, 0.7, 0.0);
+
     commands.spawn((
         Name::new(format!("GameViewportCamera({pane_id})")),
         Camera3d::default(),
@@ -120,5 +125,6 @@ fn spawn_viewport_camera(
         Transform::from_xyz(4.0, 3.0, 6.0).looking_at(Vec3::new(0.0, 0.7, 0.0), Vec3::Y),
         RenderLayers::layer(0),
         GameViewportCamera { pane_id },
+        ViewportOrbitCamera::from_eye_and_target(eye, target),
     ));
 }
