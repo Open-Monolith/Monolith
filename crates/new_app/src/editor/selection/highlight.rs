@@ -36,7 +36,7 @@ pub fn spawn_outline_for_selected(
                 Name::new("SelectionOutline"),
                 Mesh3d(mesh.0.clone()),
                 MeshMaterial3d(outline_material.0.clone()),
-                Transform::from_scale((Vec3::splat(1.03))),
+                Transform::from_scale(Vec3::splat(1.03)),
                 SelectionOutline
             ));
         });

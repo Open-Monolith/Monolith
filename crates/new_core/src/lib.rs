@@ -3,6 +3,10 @@ use bevy_egui::egui;
 use egui_tiles::Tree;
 use std::collections::HashMap;
 
+
+pub mod element;
+pub mod placement;
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum PaneKind {
     Console,
