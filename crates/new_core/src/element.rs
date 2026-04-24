@@ -1,11 +1,12 @@
 use std::collections::BTreeMap;
+use strum_macros::{AsRefStr, Display};
 
 // The id of each element
 // Later will be revised to use timestampt bit + node + seq
 pub type ElementId = i64;
 
 // Element kind. Will be expanded later
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Display, AsRefStr)]
 pub enum ElementKind {
     Wall,
     Floor,
