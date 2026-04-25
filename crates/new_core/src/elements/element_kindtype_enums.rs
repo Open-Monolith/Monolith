@@ -1,3 +1,9 @@
+// File: element_kindtype_enums.rs
+// Desc: Contains the enums for the PredefinedType of each
+// ifc entity class
+
+
+// Notes
 // Generated from buildingSMART IFC4X3_ADD2.exp.
 // Source: every EXPRESS entity attribute named `PredefinedType`.
 // Schema scope: IFC4x3 ADD2 / IFC 4.3.2 semantic schema.
@@ -6,7 +12,7 @@
 // That is intentional: it avoids case-conversion errors and preserves schema literals.
 //
 // Rule: USERDEFINED requires the related ObjectType/ElementType string to carry the custom label.
-// Rule: NOTDEFINED means the subtype is unknown or inherited from the assigned IfcTypeObject.
+// Rule: NOTDEFINED means the Type is unknown or inherited from the assigned IfcTypeObject.
 
 use serde::{Deserialize, Serialize};
 
@@ -15,7 +21,7 @@ use serde::{Deserialize, Serialize};
 /// Monolith target: `ActionRequest`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ActionRequestSubType {
+pub enum ActionRequestType {
     EMAIL,
     FAX,
     PHONE,
@@ -30,7 +36,7 @@ pub enum ActionRequestSubType {
 /// Monolith target: `Actuator`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ActuatorSubType {
+pub enum ActuatorType {
     ELECTRICACTUATOR,
     HANDOPERATEDACTUATOR,
     HYDRAULICACTUATOR,
@@ -45,7 +51,7 @@ pub enum ActuatorSubType {
 /// Monolith target: `AirTerminalBox`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AirTerminalBoxSubType {
+pub enum AirTerminalBoxType {
     CONSTANTFLOW,
     VARIABLEFLOWPRESSUREDEPENDANT,
     VARIABLEFLOWPRESSUREINDEPENDANT,
@@ -58,7 +64,7 @@ pub enum AirTerminalBoxSubType {
 /// Monolith target: `AirTerminal`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AirTerminalSubType {
+pub enum AirTerminalType {
     DIFFUSER,
     GRILLE,
     LOUVRE,
@@ -72,7 +78,7 @@ pub enum AirTerminalSubType {
 /// Monolith target: `AirToAirHeatRecovery`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AirToAirHeatRecoverySubType {
+pub enum AirToAirHeatRecoveryType {
     FIXEDPLATECOUNTERFLOWEXCHANGER,
     FIXEDPLATECROSSFLOWEXCHANGER,
     FIXEDPLATEPARALLELFLOWEXCHANGER,
@@ -91,7 +97,7 @@ pub enum AirToAirHeatRecoverySubType {
 /// Monolith target: `Alarm`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AlarmSubType {
+pub enum AlarmType {
     BELL,
     BREAKGLASSBUTTON,
     LIGHT,
@@ -109,7 +115,7 @@ pub enum AlarmSubType {
 /// Monolith target: `AlignmentCantSegment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AlignmentCantSegmentSubType {
+pub enum AlignmentCantSegmentType {
     BLOSSCURVE,
     CONSTANTCANT,
     COSINECURVE,
@@ -124,7 +130,7 @@ pub enum AlignmentCantSegmentSubType {
 /// Monolith target: `AlignmentHorizontalSegment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AlignmentHorizontalSegmentSubType {
+pub enum AlignmentHorizontalSegmentType {
     BLOSSCURVE,
     CIRCULARARC,
     CLOTHOID,
@@ -141,7 +147,7 @@ pub enum AlignmentHorizontalSegmentSubType {
 /// Monolith target: `Alignment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AlignmentSubType {
+pub enum AlignmentType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -151,7 +157,7 @@ pub enum AlignmentSubType {
 /// Monolith target: `AlignmentVerticalSegment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AlignmentVerticalSegmentSubType {
+pub enum AlignmentVerticalSegmentType {
     CIRCULARARC,
     CLOTHOID,
     CONSTANTGRADIENT,
@@ -163,7 +169,7 @@ pub enum AlignmentVerticalSegmentSubType {
 /// Monolith target: `StructuralAnalysisModel`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AnalysisModelSubType {
+pub enum AnalysisModelType {
     IN_PLANE_LOADING_2D,
     LOADING_3D,
     OUT_PLANE_LOADING_2D,
@@ -176,7 +182,7 @@ pub enum AnalysisModelSubType {
 /// Monolith target: `Annotation`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AnnotationSubType {
+pub enum AnnotationType {
     CONTOURLINE,
     DIMENSION,
     ISOBAR,
@@ -195,7 +201,7 @@ pub enum AnnotationSubType {
 /// Monolith target: `AudioVisualAppliance`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum AudioVisualApplianceSubType {
+pub enum AudioVisualApplianceType {
     AMPLIFIER,
     CAMERA,
     COMMUNICATIONTERMINAL,
@@ -218,7 +224,7 @@ pub enum AudioVisualApplianceSubType {
 /// Monolith target: `Beam`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BeamSubType {
+pub enum BeamType {
     BEAM,
     CORNICE,
     DIAPHRAGM,
@@ -240,7 +246,7 @@ pub enum BeamSubType {
 /// Monolith target: `Bearing`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BearingSubType {
+pub enum BearingType {
     CYLINDRICAL,
     DISK,
     ELASTOMERIC,
@@ -258,7 +264,7 @@ pub enum BearingSubType {
 /// Monolith target: `Boiler`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BoilerSubType {
+pub enum BoilerType {
     STEAM,
     WATER,
     USERDEFINED,
@@ -270,7 +276,7 @@ pub enum BoilerSubType {
 /// Monolith target: `BridgePart`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BridgePartSubType {
+pub enum BridgePartType {
     ABUTMENT,
     DECK,
     DECK_SEGMENT,
@@ -290,7 +296,7 @@ pub enum BridgePartSubType {
 /// Monolith target: `Bridge`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BridgeSubType {
+pub enum BridgeType {
     ARCHED,
     CABLE_STAYED,
     CANTILEVER,
@@ -308,7 +314,7 @@ pub enum BridgeSubType {
 /// Monolith target: `BuildingElementPart`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BuildingElementPartSubType {
+pub enum BuildingElementPartType {
     APRON,
     ARMOURUNIT,
     INSULATION,
@@ -323,7 +329,7 @@ pub enum BuildingElementPartSubType {
 /// Monolith target: `BuildingElementProxy`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BuildingElementProxySubType {
+pub enum BuildingElementProxyType {
     COMPLEX,
     ELEMENT,
     PARTIAL,
@@ -338,7 +344,7 @@ pub enum BuildingElementProxySubType {
 /// Monolith target: `BuildingSystem`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BuildingSystemSubType {
+pub enum BuildingSystemType {
     FENESTRATION,
     FOUNDATION,
     LOADBEARING,
@@ -354,7 +360,7 @@ pub enum BuildingSystemSubType {
 /// Monolith target: `BuiltSystem`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BuiltSystemSubType {
+pub enum BuiltSystemType {
     EROSIONPREVENTION,
     FENESTRATION,
     FOUNDATION,
@@ -377,7 +383,7 @@ pub enum BuiltSystemSubType {
 /// Monolith target: `Burner`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum BurnerSubType {
+pub enum BurnerType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -387,7 +393,7 @@ pub enum BurnerSubType {
 /// Monolith target: `CableCarrierFitting`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CableCarrierFittingSubType {
+pub enum CableCarrierFittingType {
     BEND,
     CONNECTOR,
     CROSS,
@@ -404,7 +410,7 @@ pub enum CableCarrierFittingSubType {
 /// Monolith target: `CableCarrierSegment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CableCarrierSegmentSubType {
+pub enum CableCarrierSegmentType {
     CABLEBRACKET,
     CABLELADDERSEGMENT,
     CABLETRAYSEGMENT,
@@ -421,7 +427,7 @@ pub enum CableCarrierSegmentSubType {
 /// Monolith target: `CableFitting`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CableFittingSubType {
+pub enum CableFittingType {
     CONNECTOR,
     ENTRY,
     EXIT,
@@ -437,7 +443,7 @@ pub enum CableFittingSubType {
 /// Monolith target: `CableSegment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CableSegmentSubType {
+pub enum CableSegmentType {
     BUSBARSEGMENT,
     CABLESEGMENT,
     CONDUCTORSEGMENT,
@@ -457,7 +463,7 @@ pub enum CableSegmentSubType {
 /// Monolith target: `CaissonFoundation`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CaissonFoundationSubType {
+pub enum CaissonFoundationType {
     CAISSON,
     WELL,
     USERDEFINED,
@@ -469,7 +475,7 @@ pub enum CaissonFoundationSubType {
 /// Monolith target: `Chiller`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ChillerSubType {
+pub enum ChillerType {
     AIRCOOLED,
     HEATRECOVERY,
     WATERCOOLED,
@@ -482,7 +488,7 @@ pub enum ChillerSubType {
 /// Monolith target: `Chimney`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ChimneySubType {
+pub enum ChimneyType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -492,7 +498,7 @@ pub enum ChimneySubType {
 /// Monolith target: `Coil`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CoilSubType {
+pub enum CoilType {
     DXCOOLINGCOIL,
     ELECTRICHEATINGCOIL,
     GASHEATINGCOIL,
@@ -509,7 +515,7 @@ pub enum CoilSubType {
 /// Monolith target: `Column`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ColumnSubType {
+pub enum ColumnType {
     COLUMN,
     PIERSTEM,
     PIERSTEM_SEGMENT,
@@ -524,7 +530,7 @@ pub enum ColumnSubType {
 /// Monolith target: `CommunicationsAppliance`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CommunicationsApplianceSubType {
+pub enum CommunicationsApplianceType {
     ANTENNA,
     AUTOMATON,
     COMPUTER,
@@ -558,7 +564,7 @@ pub enum CommunicationsApplianceSubType {
 /// Monolith target: `Compressor`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CompressorSubType {
+pub enum CompressorType {
     BOOSTER,
     DYNAMIC,
     HERMETIC,
@@ -583,7 +589,7 @@ pub enum CompressorSubType {
 /// Monolith target: `Condenser`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CondenserSubType {
+pub enum CondenserType {
     AIRCOOLED,
     EVAPORATIVECOOLED,
     WATERCOOLED,
@@ -600,7 +606,7 @@ pub enum CondenserSubType {
 /// Monolith target: `ConstructionEquipmentResource`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ConstructionEquipmentResourceSubType {
+pub enum ConstructionEquipmentResourceType {
     DEMOLISHING,
     EARTHMOVING,
     ERECTING,
@@ -618,7 +624,7 @@ pub enum ConstructionEquipmentResourceSubType {
 /// Monolith target: `ConstructionMaterialResource`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ConstructionMaterialResourceSubType {
+pub enum ConstructionMaterialResourceType {
     AGGREGATES,
     CONCRETE,
     DRYWALL,
@@ -637,7 +643,7 @@ pub enum ConstructionMaterialResourceSubType {
 /// Monolith target: `ConstructionProductResource`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ConstructionProductResourceSubType {
+pub enum ConstructionProductResourceType {
     ASSEMBLY,
     FORMWORK,
     USERDEFINED,
@@ -649,7 +655,7 @@ pub enum ConstructionProductResourceSubType {
 /// Monolith target: `Controller`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ControllerSubType {
+pub enum ControllerType {
     FLOATING,
     MULTIPOSITION,
     PROGRAMMABLE,
@@ -664,7 +670,7 @@ pub enum ControllerSubType {
 /// Monolith target: `ConveyorSegment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ConveyorSegmentSubType {
+pub enum ConveyorSegmentType {
     BELTCONVEYOR,
     BUCKETCONVEYOR,
     CHUTECONVEYOR,
@@ -678,7 +684,7 @@ pub enum ConveyorSegmentSubType {
 /// Monolith target: `CooledBeam`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CooledBeamSubType {
+pub enum CooledBeamType {
     ACTIVE,
     PASSIVE,
     USERDEFINED,
@@ -690,7 +696,7 @@ pub enum CooledBeamSubType {
 /// Monolith target: `CoolingTower`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CoolingTowerSubType {
+pub enum CoolingTowerType {
     MECHANICALFORCEDDRAFT,
     MECHANICALINDUCEDDRAFT,
     NATURALDRAFT,
@@ -703,7 +709,7 @@ pub enum CoolingTowerSubType {
 /// Monolith target: `CostItem`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CostItemSubType {
+pub enum CostItemType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -713,7 +719,7 @@ pub enum CostItemSubType {
 /// Monolith target: `CostSchedule`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CostScheduleSubType {
+pub enum CostScheduleType {
     BUDGET,
     COSTPLAN,
     ESTIMATE,
@@ -730,7 +736,7 @@ pub enum CostScheduleSubType {
 /// Monolith target: `Course`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CourseSubType {
+pub enum CourseType {
     ARMOUR,
     BALLASTBED,
     CORE,
@@ -746,7 +752,7 @@ pub enum CourseSubType {
 /// Monolith target: `Covering`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CoveringSubType {
+pub enum CoveringType {
     CEILING,
     CLADDING,
     COPING,
@@ -768,7 +774,7 @@ pub enum CoveringSubType {
 /// Monolith target: `CrewResource`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CrewResourceSubType {
+pub enum CrewResourceType {
     OFFICE,
     SITE,
     USERDEFINED,
@@ -780,7 +786,7 @@ pub enum CrewResourceSubType {
 /// Monolith target: `CurtainWall`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum CurtainWallSubType {
+pub enum CurtainWallType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -790,7 +796,7 @@ pub enum CurtainWallSubType {
 /// Monolith target: `Damper`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DamperSubType {
+pub enum DamperType {
     BACKDRAFTDAMPER,
     BALANCINGDAMPER,
     BLASTDAMPER,
@@ -811,7 +817,7 @@ pub enum DamperSubType {
 /// Monolith target: `DiscreteAccessory`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DiscreteAccessorySubType {
+pub enum DiscreteAccessoryType {
     ANCHORPLATE,
     BIRDPROTECTION,
     BRACKET,
@@ -842,7 +848,7 @@ pub enum DiscreteAccessorySubType {
 /// Monolith target: `DistributionBoard`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DistributionBoardSubType {
+pub enum DistributionBoardType {
     CONSUMERUNIT,
     DISPATCHINGBOARD,
     DISTRIBUTIONBOARD,
@@ -858,7 +864,7 @@ pub enum DistributionBoardSubType {
 /// Monolith target: `DistributionChamberElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DistributionChamberElementSubType {
+pub enum DistributionChamberElementType {
     FORMEDDUCT,
     INSPECTIONCHAMBER,
     INSPECTIONPIT,
@@ -876,7 +882,7 @@ pub enum DistributionChamberElementSubType {
 /// Monolith target: `DistributionPort`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DistributionPortSubType {
+pub enum DistributionPortType {
     CABLE,
     CABLECARRIER,
     DUCT,
@@ -950,7 +956,7 @@ pub enum DistributionSystemEnum {
 /// Monolith target: `Door`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DoorSubType {
+pub enum DoorType {
     BOOM_BARRIER,
     DOOR,
     GATE,
@@ -965,7 +971,7 @@ pub enum DoorSubType {
 /// Monolith target: `DuctFitting`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DuctFittingSubType {
+pub enum DuctFittingType {
     BEND,
     CONNECTOR,
     ENTRY,
@@ -982,7 +988,7 @@ pub enum DuctFittingSubType {
 /// Monolith target: `DuctSegment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DuctSegmentSubType {
+pub enum DuctSegmentType {
     FLEXIBLESEGMENT,
     RIGIDSEGMENT,
     USERDEFINED,
@@ -994,7 +1000,7 @@ pub enum DuctSegmentSubType {
 /// Monolith target: `DuctSilencer`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DuctSilencerSubType {
+pub enum DuctSilencerType {
     FLATOVAL,
     RECTANGULAR,
     ROUND,
@@ -1007,7 +1013,7 @@ pub enum DuctSilencerSubType {
 /// Monolith target: `EarthworksCut`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum EarthworksCutSubType {
+pub enum EarthworksCutType {
     BASE_EXCAVATION,
     CUT,
     DREDGING,
@@ -1026,7 +1032,7 @@ pub enum EarthworksCutSubType {
 /// Monolith target: `EarthworksFill`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum EarthworksFillSubType {
+pub enum EarthworksFillType {
     BACKFILL,
     COUNTERWEIGHT,
     EMBANKMENT,
@@ -1043,7 +1049,7 @@ pub enum EarthworksFillSubType {
 /// Monolith target: `ElectricAppliance`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ElectricApplianceSubType {
+pub enum ElectricApplianceType {
     DISHWASHER,
     ELECTRICCOOKER,
     FREESTANDINGELECTRICHEATER,
@@ -1069,7 +1075,7 @@ pub enum ElectricApplianceSubType {
 /// Monolith target: `ElectricDistributionBoard`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ElectricDistributionBoardSubType {
+pub enum ElectricDistributionBoardType {
     CONSUMERUNIT,
     DISTRIBUTIONBOARD,
     MOTORCONTROLCENTRE,
@@ -1083,7 +1089,7 @@ pub enum ElectricDistributionBoardSubType {
 /// Monolith target: `ElectricFlowStorageDevice`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ElectricFlowStorageDeviceSubType {
+pub enum ElectricFlowStorageDeviceType {
     BATTERY,
     CAPACITOR,
     CAPACITORBANK,
@@ -1102,7 +1108,7 @@ pub enum ElectricFlowStorageDeviceSubType {
 /// Monolith target: `ElectricFlowTreatmentDevice`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ElectricFlowTreatmentDeviceSubType {
+pub enum ElectricFlowTreatmentDeviceType {
     ELECTRONICFILTER,
     USERDEFINED,
     NOTDEFINED,
@@ -1113,7 +1119,7 @@ pub enum ElectricFlowTreatmentDeviceSubType {
 /// Monolith target: `ElectricGenerator`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ElectricGeneratorSubType {
+pub enum ElectricGeneratorType {
     CHP,
     ENGINEGENERATOR,
     STANDALONE,
@@ -1126,7 +1132,7 @@ pub enum ElectricGeneratorSubType {
 /// Monolith target: `ElectricMotor`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ElectricMotorSubType {
+pub enum ElectricMotorType {
     DC,
     INDUCTION,
     POLYPHASE,
@@ -1141,7 +1147,7 @@ pub enum ElectricMotorSubType {
 /// Monolith target: `ElectricTimeControl`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ElectricTimeControlSubType {
+pub enum ElectricTimeControlType {
     RELAY,
     TIMECLOCK,
     TIMEDELAY,
@@ -1154,7 +1160,7 @@ pub enum ElectricTimeControlSubType {
 /// Monolith target: `ElementAssembly`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ElementAssemblySubType {
+pub enum ElementAssemblyType {
     ABUTMENT,
     ACCESSORY_ASSEMBLY,
     ARCH,
@@ -1192,7 +1198,7 @@ pub enum ElementAssemblySubType {
 /// Monolith target: `Engine`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum EngineSubType {
+pub enum EngineType {
     EXTERNALCOMBUSTION,
     INTERNALCOMBUSTION,
     USERDEFINED,
@@ -1204,7 +1210,7 @@ pub enum EngineSubType {
 /// Monolith target: `EvaporativeCooler`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum EvaporativeCoolerSubType {
+pub enum EvaporativeCoolerType {
     DIRECTEVAPORATIVEAIRWASHER,
     DIRECTEVAPORATIVEPACKAGEDROTARYAIRCOOLER,
     DIRECTEVAPORATIVERANDOMMEDIAAIRCOOLER,
@@ -1223,7 +1229,7 @@ pub enum EvaporativeCoolerSubType {
 /// Monolith target: `Evaporator`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum EvaporatorSubType {
+pub enum EvaporatorType {
     DIRECTEXPANSION,
     DIRECTEXPANSIONBRAZEDPLATE,
     DIRECTEXPANSIONSHELLANDTUBE,
@@ -1239,7 +1245,7 @@ pub enum EvaporatorSubType {
 /// Monolith target: `Event`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum EventSubType {
+pub enum EventType {
     ENDEVENT,
     INTERMEDIATEEVENT,
     STARTEVENT,
@@ -1252,7 +1258,7 @@ pub enum EventSubType {
 /// Monolith target: `ExternalSpatialElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ExternalSpatialElementSubType {
+pub enum ExternalSpatialElementType {
     EXTERNAL,
     EXTERNAL_EARTH,
     EXTERNAL_FIRE,
@@ -1266,7 +1272,7 @@ pub enum ExternalSpatialElementSubType {
 /// Monolith target: `FacilityPartCommon`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum FacilityPartCommonSubType {
+pub enum FacilityPartCommonType {
     ABOVEGROUND,
     BELOWGROUND,
     JUNCTION,
@@ -1284,7 +1290,7 @@ pub enum FacilityPartCommonSubType {
 /// Monolith target: `Fan`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum FanSubType {
+pub enum FanType {
     CENTRIFUGALAIRFOIL,
     CENTRIFUGALBACKWARDINCLINEDCURVED,
     CENTRIFUGALFORWARDCURVED,
@@ -1301,7 +1307,7 @@ pub enum FanSubType {
 /// Monolith target: `Fastener`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum FastenerSubType {
+pub enum FastenerType {
     GLUE,
     MORTAR,
     WELD,
@@ -1314,7 +1320,7 @@ pub enum FastenerSubType {
 /// Monolith target: `Filter`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum FilterSubType {
+pub enum FilterType {
     AIRPARTICLEFILTER,
     COMPRESSEDAIRFILTER,
     ODORFILTER,
@@ -1330,7 +1336,7 @@ pub enum FilterSubType {
 /// Monolith target: `FireSuppressionTerminal`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum FireSuppressionTerminalSubType {
+pub enum FireSuppressionTerminalType {
     BREECHINGINLET,
     FIREHYDRANT,
     FIREMONITOR,
@@ -1346,7 +1352,7 @@ pub enum FireSuppressionTerminalSubType {
 /// Monolith target: `FlowInstrument`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum FlowInstrumentSubType {
+pub enum FlowInstrumentType {
     AMMETER,
     COMBINED,
     FREQUENCYMETER,
@@ -1366,7 +1372,7 @@ pub enum FlowInstrumentSubType {
 /// Monolith target: `FlowMeter`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum FlowMeterSubType {
+pub enum FlowMeterType {
     ENERGYMETER,
     GASMETER,
     OILMETER,
@@ -1380,7 +1386,7 @@ pub enum FlowMeterSubType {
 /// Monolith target: `Footing`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum FootingSubType {
+pub enum FootingType {
     CAISSON_FOUNDATION,
     FOOTING_BEAM,
     PAD_FOOTING,
@@ -1395,7 +1401,7 @@ pub enum FootingSubType {
 /// Monolith target: `Furniture`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum FurnitureSubType {
+pub enum FurnitureType {
     BED,
     CHAIR,
     DESK,
@@ -1413,7 +1419,7 @@ pub enum FurnitureSubType {
 /// Monolith target: `GeographicElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum GeographicElementSubType {
+pub enum GeographicElementType {
     SOIL_BORING_POINT,
     TERRAIN,
     VEGETATION,
@@ -1426,7 +1432,7 @@ pub enum GeographicElementSubType {
 /// Monolith target: `GeotechnicalStratum`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum GeotechnicalStratumSubType {
+pub enum GeotechnicalStratumType {
     SOLID,
     VOID,
     WATER,
@@ -1439,7 +1445,7 @@ pub enum GeotechnicalStratumSubType {
 /// Monolith target: `Grid`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum GridSubType {
+pub enum GridType {
     IRREGULAR,
     RADIAL,
     RECTANGULAR,
@@ -1453,7 +1459,7 @@ pub enum GridSubType {
 /// Monolith target: `HeatExchanger`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum HeatExchangerSubType {
+pub enum HeatExchangerType {
     PLATE,
     SHELLANDTUBE,
     TURNOUTHEATING,
@@ -1466,7 +1472,7 @@ pub enum HeatExchangerSubType {
 /// Monolith target: `Humidifier`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum HumidifierSubType {
+pub enum HumidifierType {
     ADIABATICAIRWASHER,
     ADIABATICATOMIZING,
     ADIABATICCOMPRESSEDAIRNOZZLE,
@@ -1489,7 +1495,7 @@ pub enum HumidifierSubType {
 /// Monolith target: `ImpactProtectionDevice`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ImpactProtectionDeviceSubType {
+pub enum ImpactProtectionDeviceType {
     BUMPER,
     CRASHCUSHION,
     DAMPINGSYSTEM,
@@ -1503,7 +1509,7 @@ pub enum ImpactProtectionDeviceSubType {
 /// Monolith target: `Interceptor`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum InterceptorSubType {
+pub enum InterceptorType {
     CYCLONIC,
     GREASE,
     OIL,
@@ -1517,7 +1523,7 @@ pub enum InterceptorSubType {
 /// Monolith target: `Inventory`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum InventorySubType {
+pub enum InventoryType {
     ASSETINVENTORY,
     FURNITUREINVENTORY,
     SPACEINVENTORY,
@@ -1530,7 +1536,7 @@ pub enum InventorySubType {
 /// Monolith target: `JunctionBox`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum JunctionBoxSubType {
+pub enum JunctionBoxType {
     DATA,
     POWER,
     USERDEFINED,
@@ -1542,7 +1548,7 @@ pub enum JunctionBoxSubType {
 /// Monolith target: `Kerb`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum KerbSubType {
+pub enum KerbType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -1552,7 +1558,7 @@ pub enum KerbSubType {
 /// Monolith target: `LaborResource`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum LaborResourceSubType {
+pub enum LaborResourceType {
     ADMINISTRATION,
     CARPENTRY,
     CLEANING,
@@ -1581,7 +1587,7 @@ pub enum LaborResourceSubType {
 /// Monolith target: `Lamp`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum LampSubType {
+pub enum LampType {
     COMPACTFLUORESCENT,
     FLUORESCENT,
     HALOGEN,
@@ -1600,7 +1606,7 @@ pub enum LampSubType {
 /// Monolith target: `LightFixture`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum LightFixtureSubType {
+pub enum LightFixtureType {
     DIRECTIONSOURCE,
     POINTSOURCE,
     SECURITYLIGHTING,
@@ -1613,7 +1619,7 @@ pub enum LightFixtureSubType {
 /// Monolith target: `LiquidTerminal`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum LiquidTerminalSubType {
+pub enum LiquidTerminalType {
     HOSEREEL,
     LOADINGARM,
     USERDEFINED,
@@ -1625,7 +1631,7 @@ pub enum LiquidTerminalSubType {
 /// Monolith target: `StructuralLoadGroup`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum LoadGroupSubType {
+pub enum LoadGroupType {
     LOAD_CASE,
     LOAD_COMBINATION,
     LOAD_GROUP,
@@ -1638,7 +1644,7 @@ pub enum LoadGroupSubType {
 /// Monolith target: `MarineFacility`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum MarineFacilitySubType {
+pub enum MarineFacilityType {
     BARRIERBEACH,
     BREAKWATER,
     CANAL,
@@ -1667,7 +1673,7 @@ pub enum MarineFacilitySubType {
 /// Monolith target: `MarinePart`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum MarinePartSubType {
+pub enum MarinePartType {
     ABOVEWATERLINE,
     ANCHORAGE,
     APPROACHCHANNEL,
@@ -1701,7 +1707,7 @@ pub enum MarinePartSubType {
 /// Monolith target: `MechanicalFastener`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum MechanicalFastenerSubType {
+pub enum MechanicalFastenerType {
     ANCHORBOLT,
     BOLT,
     CHAIN,
@@ -1726,7 +1732,7 @@ pub enum MechanicalFastenerSubType {
 /// Monolith target: `MedicalDevice`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum MedicalDeviceSubType {
+pub enum MedicalDeviceType {
     AIRSTATION,
     FEEDAIRUNIT,
     OXYGENGENERATOR,
@@ -1741,7 +1747,7 @@ pub enum MedicalDeviceSubType {
 /// Monolith target: `Member`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum MemberSubType {
+pub enum MemberType {
     ARCH_SEGMENT,
     BRACE,
     CHORD,
@@ -1770,7 +1776,7 @@ pub enum MemberSubType {
 /// Monolith target: `MobileTelecommunicationsAppliance`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum MobileTelecommunicationsApplianceSubType {
+pub enum MobileTelecommunicationsApplianceType {
     ACCESSPOINT,
     BASEBANDUNIT,
     BASETRANSCEIVERSTATION,
@@ -1793,7 +1799,7 @@ pub enum MobileTelecommunicationsApplianceSubType {
 /// Monolith target: `MooringDevice`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum MooringDeviceSubType {
+pub enum MooringDeviceType {
     BOLLARD,
     LINETENSIONER,
     MAGNETICDEVICE,
@@ -1808,7 +1814,7 @@ pub enum MooringDeviceSubType {
 /// Monolith target: `MotorConnection`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum MotorConnectionSubType {
+pub enum MotorConnectionType {
     BELTDRIVE,
     COUPLING,
     DIRECTDRIVE,
@@ -1821,7 +1827,7 @@ pub enum MotorConnectionSubType {
 /// Monolith target: `NavigationElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum NavigationElementSubType {
+pub enum NavigationElementType {
     BEACON,
     BUOY,
     USERDEFINED,
@@ -1833,7 +1839,7 @@ pub enum NavigationElementSubType {
 /// Monolith target: `Occupant`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum OccupantSubType {
+pub enum OccupantType {
     ASSIGNEE,
     ASSIGNOR,
     LESSEE,
@@ -1850,7 +1856,7 @@ pub enum OccupantSubType {
 /// Monolith target: `OpeningElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum OpeningElementSubType {
+pub enum OpeningElementType {
     OPENING,
     RECESS,
     USERDEFINED,
@@ -1862,7 +1868,7 @@ pub enum OpeningElementSubType {
 /// Monolith target: `Outlet`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum OutletSubType {
+pub enum OutletType {
     AUDIOVISUALOUTLET,
     COMMUNICATIONSOUTLET,
     DATAOUTLET,
@@ -1877,7 +1883,7 @@ pub enum OutletSubType {
 /// Monolith target: `Pavement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PavementSubType {
+pub enum PavementType {
     FLEXIBLE,
     RIGID,
     USERDEFINED,
@@ -1889,7 +1895,7 @@ pub enum PavementSubType {
 /// Monolith target: `PerformanceHistory`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PerformanceHistorySubType {
+pub enum PerformanceHistoryType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -1899,7 +1905,7 @@ pub enum PerformanceHistorySubType {
 /// Monolith target: `Permit`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PermitSubType {
+pub enum PermitType {
     ACCESS,
     BUILDING,
     WORK,
@@ -1912,7 +1918,7 @@ pub enum PermitSubType {
 /// Monolith target: `Pile`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PileSubType {
+pub enum PileType {
     BORED,
     COHESION,
     DRIVEN,
@@ -1928,7 +1934,7 @@ pub enum PileSubType {
 /// Monolith target: `PipeFitting`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PipeFittingSubType {
+pub enum PipeFittingType {
     BEND,
     CONNECTOR,
     ENTRY,
@@ -1945,7 +1951,7 @@ pub enum PipeFittingSubType {
 /// Monolith target: `PipeSegment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PipeSegmentSubType {
+pub enum PipeSegmentType {
     CULVERT,
     FLEXIBLESEGMENT,
     GUTTER,
@@ -1960,7 +1966,7 @@ pub enum PipeSegmentSubType {
 /// Monolith target: `Plate`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PlateSubType {
+pub enum PlateType {
     BASE_PLATE,
     COVER_PLATE,
     CURTAIN_PANEL,
@@ -1979,7 +1985,7 @@ pub enum PlateSubType {
 /// Monolith target: `Procedure`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ProcedureSubType {
+pub enum ProcedureType {
     ADVICE_CAUTION,
     ADVICE_NOTE,
     ADVICE_WARNING,
@@ -1996,7 +2002,7 @@ pub enum ProcedureSubType {
 /// Monolith target: `ProjectOrder`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ProjectOrderSubType {
+pub enum ProjectOrderType {
     CHANGEORDER,
     MAINTENANCEWORKORDER,
     MOVEORDER,
@@ -2011,7 +2017,7 @@ pub enum ProjectOrderSubType {
 /// Monolith target: `ProjectionElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ProjectionElementSubType {
+pub enum ProjectionElementType {
     BLISTER,
     DEVIATOR,
     USERDEFINED,
@@ -2023,7 +2029,7 @@ pub enum ProjectionElementSubType {
 /// Monolith target: `ProtectiveDeviceTrippingUnit`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ProtectiveDeviceTrippingUnitSubType {
+pub enum ProtectiveDeviceTrippingUnitType {
     ELECTROMAGNETIC,
     ELECTRONIC,
     RESIDUALCURRENT,
@@ -2037,7 +2043,7 @@ pub enum ProtectiveDeviceTrippingUnitSubType {
 /// Monolith target: `ProtectiveDevice`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ProtectiveDeviceSubType {
+pub enum ProtectiveDeviceType {
     ANTI_ARCING_DEVICE,
     CIRCUITBREAKER,
     EARTHINGSWITCH,
@@ -2057,7 +2063,7 @@ pub enum ProtectiveDeviceSubType {
 /// Monolith target: `Pump`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum PumpSubType {
+pub enum PumpType {
     CIRCULATOR,
     ENDSUCTION,
     SPLITCASE,
@@ -2074,7 +2080,7 @@ pub enum PumpSubType {
 /// Monolith target: `Rail`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum RailSubType {
+pub enum RailType {
     BLADE,
     CHECKRAIL,
     GUARDRAIL,
@@ -2090,7 +2096,7 @@ pub enum RailSubType {
 /// Monolith target: `Railing`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum RailingSubType {
+pub enum RailingType {
     BALUSTRADE,
     FENCE,
     GUARDRAIL,
@@ -2104,7 +2110,7 @@ pub enum RailingSubType {
 /// Monolith target: `RailwayPart`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum RailwayPartSubType {
+pub enum RailwayPartType {
     ABOVETRACK,
     DILATIONTRACK,
     LINESIDE,
@@ -2123,7 +2129,7 @@ pub enum RailwayPartSubType {
 /// Monolith target: `Railway`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum RailwaySubType {
+pub enum RailwayType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -2133,7 +2139,7 @@ pub enum RailwaySubType {
 /// Monolith target: `RampFlight`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum RampFlightSubType {
+pub enum RampFlightType {
     SPIRAL,
     STRAIGHT,
     USERDEFINED,
@@ -2145,7 +2151,7 @@ pub enum RampFlightSubType {
 /// Monolith target: `Ramp`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum RampSubType {
+pub enum RampType {
     HALF_TURN_RAMP,
     QUARTER_TURN_RAMP,
     SPIRAL_RAMP,
@@ -2161,7 +2167,7 @@ pub enum RampSubType {
 /// Monolith target: `Referent`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ReferentSubType {
+pub enum ReferentType {
     BOUNDARY,
     INTERSECTION,
     KILOPOINT,
@@ -2181,7 +2187,7 @@ pub enum ReferentSubType {
 /// Monolith target: `ReinforcedSoil`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ReinforcedSoilSubType {
+pub enum ReinforcedSoilType {
     DYNAMICALLYCOMPACTED,
     GROUTED,
     REPLACED,
@@ -2197,7 +2203,7 @@ pub enum ReinforcedSoilSubType {
 /// Monolith target: `ReinforcingBar`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ReinforcingBarSubType {
+pub enum ReinforcingBarType {
     ANCHORING,
     EDGE,
     LIGATURE,
@@ -2216,7 +2222,7 @@ pub enum ReinforcingBarSubType {
 /// Monolith target: `ReinforcingMesh`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ReinforcingMeshSubType {
+pub enum ReinforcingMeshType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -2226,7 +2232,7 @@ pub enum ReinforcingMeshSubType {
 /// Monolith target: `RoadPart`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum RoadPartSubType {
+pub enum RoadPartType {
     BICYCLECROSSING,
     BUS_STOP,
     CARRIAGEWAY,
@@ -2260,7 +2266,7 @@ pub enum RoadPartSubType {
 /// Monolith target: `Road`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum RoadSubType {
+pub enum RoadType {
     USERDEFINED,
     NOTDEFINED,
 }
@@ -2270,7 +2276,7 @@ pub enum RoadSubType {
 /// Monolith target: `Roof`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum RoofSubType {
+pub enum RoofType {
     BARREL_ROOF,
     BUTTERFLY_ROOF,
     DOME_ROOF,
@@ -2293,7 +2299,7 @@ pub enum RoofSubType {
 /// Monolith target: `SanitaryTerminal`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SanitaryTerminalSubType {
+pub enum SanitaryTerminalType {
     BATH,
     BIDET,
     CISTERN,
@@ -2313,7 +2319,7 @@ pub enum SanitaryTerminalSubType {
 /// Monolith target: `Sensor`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SensorSubType {
+pub enum SensorType {
     CO2SENSOR,
     CONDUCTANCESENSOR,
     CONTACTSENSOR,
@@ -2355,7 +2361,7 @@ pub enum SensorSubType {
 /// Monolith target: `ShadingDevice`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ShadingDeviceSubType {
+pub enum ShadingDeviceType {
     AWNING,
     JALOUSIE,
     SHUTTER,
@@ -2368,7 +2374,7 @@ pub enum ShadingDeviceSubType {
 /// Monolith target: `Sign`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SignSubType {
+pub enum SignType {
     MARKER,
     MIRROR,
     PICTORAL,
@@ -2381,7 +2387,7 @@ pub enum SignSubType {
 /// Monolith target: `Signal`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SignalSubType {
+pub enum SignalType {
     AUDIO,
     MIXED,
     VISUAL,
@@ -2394,7 +2400,7 @@ pub enum SignalSubType {
 /// Monolith target: `Slab`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SlabSubType {
+pub enum SlabType {
     APPROACH_SLAB,
     BASESLAB,
     FLOOR,
@@ -2413,7 +2419,7 @@ pub enum SlabSubType {
 /// Monolith target: `SolarDevice`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SolarDeviceSubType {
+pub enum SolarDeviceType {
     SOLARCOLLECTOR,
     SOLARPANEL,
     USERDEFINED,
@@ -2425,7 +2431,7 @@ pub enum SolarDeviceSubType {
 /// Monolith target: `SpaceHeater`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SpaceHeaterSubType {
+pub enum SpaceHeaterType {
     CONVECTOR,
     RADIATOR,
     USERDEFINED,
@@ -2437,7 +2443,7 @@ pub enum SpaceHeaterSubType {
 /// Monolith target: `Space`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SpaceSubType {
+pub enum SpaceType {
     BERTH,
     EXTERNAL,
     GFA,
@@ -2453,7 +2459,7 @@ pub enum SpaceSubType {
 /// Monolith target: `SpatialZone`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SpatialZoneSubType {
+pub enum SpatialZoneType {
     CONSTRUCTION,
     FIRESAFETY,
     INTERFERENCE,
@@ -2473,7 +2479,7 @@ pub enum SpatialZoneSubType {
 /// Monolith target: `StackTerminal`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum StackTerminalSubType {
+pub enum StackTerminalType {
     BIRDCAGE,
     COWL,
     RAINWATERHOPPER,
@@ -2486,7 +2492,7 @@ pub enum StackTerminalSubType {
 /// Monolith target: `StairFlight`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum StairFlightSubType {
+pub enum StairFlightType {
     CURVED,
     FREEFORM,
     SPIRAL,
@@ -2501,7 +2507,7 @@ pub enum StairFlightSubType {
 /// Monolith target: `Stair`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum StairSubType {
+pub enum StairType {
     CURVED_RUN_STAIR,
     DOUBLE_RETURN_STAIR,
     HALF_TURN_STAIR,
@@ -2526,7 +2532,7 @@ pub enum StairSubType {
 /// Monolith target: `StructuralCurveAction`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum StructuralCurveActivitySubType {
+pub enum StructuralCurveActivityType {
     CONST,
     DISCRETE,
     EQUIDISTANT,
@@ -2543,7 +2549,7 @@ pub enum StructuralCurveActivitySubType {
 /// Monolith target: `StructuralCurveMember`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum StructuralCurveMemberSubType {
+pub enum StructuralCurveMemberType {
     CABLE,
     COMPRESSION_MEMBER,
     PIN_JOINED_MEMBER,
@@ -2558,7 +2564,7 @@ pub enum StructuralCurveMemberSubType {
 /// Monolith target: `StructuralSurfaceAction`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum StructuralSurfaceActivitySubType {
+pub enum StructuralSurfaceActivityType {
     BILINEAR,
     CONST,
     DISCRETE,
@@ -2572,7 +2578,7 @@ pub enum StructuralSurfaceActivitySubType {
 /// Monolith target: `StructuralSurfaceMember`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum StructuralSurfaceMemberSubType {
+pub enum StructuralSurfaceMemberType {
     BENDING_ELEMENT,
     MEMBRANE_ELEMENT,
     SHELL,
@@ -2585,7 +2591,7 @@ pub enum StructuralSurfaceMemberSubType {
 /// Monolith target: `SubContractResource`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SubContractResourceSubType {
+pub enum SubContractResourceType {
     PURCHASE,
     WORK,
     USERDEFINED,
@@ -2597,7 +2603,7 @@ pub enum SubContractResourceSubType {
 /// Monolith target: `SurfaceFeature`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SurfaceFeatureSubType {
+pub enum SurfaceFeatureType {
     DEFECT,
     HATCHMARKING,
     LINEMARKING,
@@ -2618,7 +2624,7 @@ pub enum SurfaceFeatureSubType {
 /// Monolith target: `SwitchingDevice`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SwitchingDeviceSubType {
+pub enum SwitchingDeviceType {
     CONTACTOR,
     DIMMERSWITCH,
     EMERGENCYSTOP,
@@ -2639,7 +2645,7 @@ pub enum SwitchingDeviceSubType {
 /// Monolith target: `SystemFurnitureElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum SystemFurnitureElementSubType {
+pub enum SystemFurnitureElementType {
     PANEL,
     SUBRACK,
     WORKSURFACE,
@@ -2652,7 +2658,7 @@ pub enum SystemFurnitureElementSubType {
 /// Monolith target: `Tank`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum TankSubType {
+pub enum TankType {
     BASIN,
     BREAKPRESSURE,
     EXPANSION,
@@ -2670,7 +2676,7 @@ pub enum TankSubType {
 /// Monolith target: `Task`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum TaskSubType {
+pub enum TaskType {
     ADJUSTMENT,
     ATTENDANCE,
     CALIBRATION,
@@ -2701,7 +2707,7 @@ pub enum TaskSubType {
 /// Monolith target: `TendonAnchor`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum TendonAnchorSubType {
+pub enum TendonAnchorType {
     COUPLER,
     FIXED_END,
     TENSIONING_END,
@@ -2714,7 +2720,7 @@ pub enum TendonAnchorSubType {
 /// Monolith target: `TendonConduit`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum TendonConduitSubType {
+pub enum TendonConduitType {
     COUPLER,
     DIABOLO,
     DUCT,
@@ -2729,7 +2735,7 @@ pub enum TendonConduitSubType {
 /// Monolith target: `Tendon`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum TendonSubType {
+pub enum TendonType {
     BAR,
     COATED,
     STRAND,
@@ -2743,7 +2749,7 @@ pub enum TendonSubType {
 /// Monolith target: `TrackElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum TrackElementSubType {
+pub enum TrackElementType {
     BLOCKINGDEVICE,
     DERAILER,
     FROG,
@@ -2761,7 +2767,7 @@ pub enum TrackElementSubType {
 /// Monolith target: `Transformer`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum TransformerSubType {
+pub enum TransformerType {
     CHOPPER,
     COMBINED,
     CURRENT,
@@ -2778,7 +2784,7 @@ pub enum TransformerSubType {
 /// Monolith target: `TransportElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum TransportElementSubType {
+pub enum TransportElementType {
     CRANEWAY,
     ELEVATOR,
     ESCALATOR,
@@ -2794,7 +2800,7 @@ pub enum TransportElementSubType {
 /// Monolith target: `TubeBundle`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum TubeBundleSubType {
+pub enum TubeBundleType {
     FINNED,
     USERDEFINED,
     NOTDEFINED,
@@ -2805,7 +2811,7 @@ pub enum TubeBundleSubType {
 /// Monolith target: `UnitaryControlElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum UnitaryControlElementSubType {
+pub enum UnitaryControlElementType {
     ALARMPANEL,
     BASESTATIONCONTROLLER,
     COMBINED,
@@ -2825,7 +2831,7 @@ pub enum UnitaryControlElementSubType {
 /// Monolith target: `UnitaryEquipment`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum UnitaryEquipmentSubType {
+pub enum UnitaryEquipmentType {
     AIRCONDITIONINGUNIT,
     AIRHANDLER,
     DEHUMIDIFIER,
@@ -2840,7 +2846,7 @@ pub enum UnitaryEquipmentSubType {
 /// Monolith target: `Valve`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum ValveSubType {
+pub enum ValveType {
     AIRRELEASE,
     ANTIVACUUM,
     CHANGEOVER,
@@ -2871,7 +2877,7 @@ pub enum ValveSubType {
 /// Monolith target: `Vehicle`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum VehicleSubType {
+pub enum VehicleType {
     CARGO,
     ROLLINGSTOCK,
     VEHICLE,
@@ -2888,7 +2894,7 @@ pub enum VehicleSubType {
 /// Monolith target: `VibrationDamper`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum VibrationDamperSubType {
+pub enum VibrationDamperType {
     AXIAL_YIELD,
     BENDING_YIELD,
     FRICTION,
@@ -2904,7 +2910,7 @@ pub enum VibrationDamperSubType {
 /// Monolith target: `VibrationIsolator`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum VibrationIsolatorSubType {
+pub enum VibrationIsolatorType {
     BASE,
     COMPRESSION,
     SPRING,
@@ -2917,7 +2923,7 @@ pub enum VibrationIsolatorSubType {
 /// Monolith target: `VirtualElement`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum VirtualElementSubType {
+pub enum VirtualElementType {
     BOUNDARY,
     CLEARANCE,
     PROVISIONFORVOID,
@@ -2930,7 +2936,7 @@ pub enum VirtualElementSubType {
 /// Monolith target: `VoidingFeature`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum VoidingFeatureSubType {
+pub enum VoidingFeatureType {
     CHAMFER,
     CUTOUT,
     EDGE,
@@ -2946,7 +2952,7 @@ pub enum VoidingFeatureSubType {
 /// Monolith target: `Wall`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum WallSubType {
+pub enum WallType {
     ELEMENTEDWALL,
     MOVABLE,
     PARAPET,
@@ -2967,7 +2973,7 @@ pub enum WallSubType {
 /// Monolith target: `WasteTerminal`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum WasteTerminalSubType {
+pub enum WasteTerminalType {
     FLOORTRAP,
     FLOORWASTE,
     GULLYSUMP,
@@ -2984,7 +2990,7 @@ pub enum WasteTerminalSubType {
 /// Monolith target: `Window`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum WindowSubType {
+pub enum WindowType {
     LIGHTDOME,
     SKYLIGHT,
     WINDOW,
@@ -2997,7 +3003,7 @@ pub enum WindowSubType {
 /// Monolith target: `WorkCalendar`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum WorkCalendarSubType {
+pub enum WorkCalendarType {
     FIRSTSHIFT,
     SECONDSHIFT,
     THIRDSHIFT,
@@ -3010,7 +3016,7 @@ pub enum WorkCalendarSubType {
 /// Monolith target: `WorkPlan`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum WorkPlanSubType {
+pub enum WorkPlanType {
     ACTUAL,
     BASELINE,
     PLANNED,
@@ -3023,7 +3029,7 @@ pub enum WorkPlanSubType {
 /// Monolith target: `WorkSchedule`.
 #[allow(non_camel_case_types)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum WorkScheduleSubType {
+pub enum WorkScheduleType {
     ACTUAL,
     BASELINE,
     PLANNED,

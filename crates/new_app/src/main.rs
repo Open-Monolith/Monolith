@@ -11,9 +11,9 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .insert_resource(WinitSettings::game()) // ← continuous rendering; no stale frames
         .add_plugins(EguiPlugin::default())
+        .add_plugins(new_db::DbPlugin)
         .add_plugins(camera::camera_plugin::AppCameraPlugin)
         .add_plugins(new_ui::UIPlugin)
         .add_plugins(selection_plugin::SelectionPlugin)
-        
         .run();
 }

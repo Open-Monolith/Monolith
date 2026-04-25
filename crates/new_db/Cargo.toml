@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+bevy = "0.18.1"
 duckdb = "1.10502.0"
 rusqlite = "0.39.0"
 new_core = { path = "../new_core"}
+log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }

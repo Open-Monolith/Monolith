@@ -9,3 +9,5 @@ bevy_egui = "0.39.1"
 egui_tiles = "0.14.1"
 serde = "1.0.228"
 strum = "0.28.0"
+strum_macros = "0.28.0"
+log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }

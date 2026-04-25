@@ -11,11 +11,11 @@ For now, the following naming convention has been adopted. It follows two princi
 1. **Clarity and ease of communication**
 2. **Alignment with IFC methodology**
 
-| Monolith Term        | IFC Term                                               | Revit Term                                                       |
-| -------------------- | ------------------------------------------------------ | ---------------------------------------------------------------- |
-| `ElementKind`        | `IfcWall`, `IfcBeam`, `IfcColumn` — entity class       | Category                                                         |
-| `ElementKindSubtype` | `PredefinedType` enum — `RETAININGWALL`, `JOIST`, etc. | No clean equivalent; closest is family purpose/category behavior |
-| `ElementKindSpec`    | `IfcTypeObject` — `IfcWallType`, `IfcBeamType`, etc.   | Family Type                                                      |
-| `Element`            | `IfcObject` occurrence                                 | Instance                                                         |
+| Monolith Term     | IFC Term                                               | Revit Term                                                       |
+| ----------------- | ------------------------------------------------------ | ---------------------------------------------------------------- |
+| `ElementKind`     | `IfcWall`, `IfcBeam`, `IfcColumn` — entity class       | Category                                                         |
+| `ElementKindType` | `PredefinedType` enum — `RETAININGWALL`, `JOIST`, etc. | No clean equivalent; closest is family purpose/category behavior |
+| `ElementKindSpec` | `IfcTypeObject` — `IfcWallType`, `IfcBeamType`, etc.   | Family Type                                                      |
+| `Element`         | `IfcObject` occurrence                                 | Instance                                                         |
 
-**Note**: `ElementKindSubType` is an enum field value - an identifier only, basically a name that further categorizes an Element. `ElementKindSpec` is the "type" equivalent in revit which is the shared object definitions that are used e.g. `Brick Wall 200mm`, `Signal Data Outlet`, etc
+**Note**: `ElementKindType` is an enum field value - an identifier only, basically a name that further categorizes an Element. `ElementKindSpec` is the "type" equivalent in revit which is the shared object definitions that are used e.g. `Brick Wall 200mm`, `Signal Data Outlet`, etc

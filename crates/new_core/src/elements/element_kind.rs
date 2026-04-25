@@ -1,13 +1,19 @@
-/// Selectable BIM product kind.
-///
-/// This enum mirrors practical IFC4x3 product occurrence entities,
-/// Notes:
-/// - This is not every IFC entity.
-/// - This includes physical elements, spatial objects, positioning objects,
-///   ports, and structural-analysis products.
-/// - Prefer specific variants over generic fallback variants when authoring.
-/// - Generic/deprecated variants are kept mainly for import compatibility.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+// File: element_kind.rs
+// Desc: Contains the enums for the ifc entity class
+
+
+
+// This enum mirrors practical IFC4x3 product occurrence entities,
+// Notes:
+// - This is not every IFC entity.
+// - This includes physical elements, spatial objects, positioning objects,
+//   ports, and structural-analysis products.
+// - Prefer specific variants over generic fallback variants when authoring.
+// - Generic/deprecated variants are kept mainly for import compatibility.
+
+use strum_macros::Display;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Display)]
 pub enum ElementKind {
     // Annotation
     Annotation, // IfcAnnotation

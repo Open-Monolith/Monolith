@@ -15,10 +15,23 @@ impl MonoDb {
                 id INTEGER PRIMARY KEY,
                 name TEXT,
                 kind TEXT NOT NULL,
-                type_id INTEGER,
+                kind_type TEXT,
+                spec_id INTEGER,
                 level_id INTEGER,
-                kind_variant_id INTEGER,
             );
+
+            CREATE TABLE IF NOT EXISTS placement_pose (
+                element_id INTEGER PRIMARY KEY,
+                px REAL NOT NULL,
+                py REAL NOT NULL,
+                pz REAL NOT NULL,
+                qx REAL NOT NULL,
+                qy REAL NOT NULL,
+                qz REAL NOT NULL,
+                qw REAL NOT NULL,
+                FOREIGN KEY (element_id) REFERENCES elements(id)
+            );
+
             ",
         )?;
         Ok(Self { conn })

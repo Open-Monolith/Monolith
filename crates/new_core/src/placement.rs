@@ -12,11 +12,6 @@ pub struct Quart3 {
     pub w: f64
 }
 
-pub struct Pose3 {
-    pub position: Point3,
-    pub rotation: Quart3
-}
-
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Quat3 {
     pub x: f64,
