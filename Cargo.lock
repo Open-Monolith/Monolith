@@ -4279,6 +4279,7 @@ dependencies = [
  "bevy",
  "bevy_egui",
  "egui_tiles",
+ "serde",
 ]
 
 [[package]]

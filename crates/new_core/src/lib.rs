@@ -5,6 +5,7 @@ use std::collections::HashMap;
 
 
 pub mod element;
+pub mod elements;
 pub mod placement;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

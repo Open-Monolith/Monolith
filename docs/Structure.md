@@ -1,0 +1,4 @@
+# Software Structure
+
+- App
+    - AppCameraPlugin 
