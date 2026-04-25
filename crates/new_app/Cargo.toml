@@ -7,5 +7,7 @@ edition = "2024"
 bevy = "0.18.1"
 bevy_egui = "0.39.1"
 egui_tiles = "0.14.1"
+rusqlite = "0.39.0"
 new_ui = { path = "../new_ui"}
 new_core = { path = "../new_core"}
+new_db = { path = "../new_app" }

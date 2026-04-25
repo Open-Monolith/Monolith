@@ -6,7 +6,7 @@ members = [
     "crates/mn_core",
     "crates/mn_db",
     "crates/mn_ui", "crates/new_app", "crates/new_core",
-    "crates/new_ui",
+    "crates/new_ui", "crates/new_db",
 ]
 
 [profile.dev]

@@ -6,6 +6,19 @@ use crate::elements::element_kind::ElementKind;
 // Later will be revised to use timestampt bit + node + seq
 pub type ElementId = i64;
 
+// Element kind. Will be expanded later
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum ElementKind {
+    Wall,
+    Floor,
+    Roof,
+    Device,
+    Duct,
+    Pipe,
+    Level,
+    Grid,
+    View,
+}
 
 // Parameters implementation.
 // I hope its not a pain in the ass to revise when duckdb is attached

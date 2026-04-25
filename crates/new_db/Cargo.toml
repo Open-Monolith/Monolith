@@ -1,8 +1,9 @@
 [package]
-name = "mn_db"
+name = "new_db"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 duckdb = "1.10502.0"
 rusqlite = "0.39.0"
+new_core = { path = "../new_core"}
