@@ -5,7 +5,7 @@ pub struct MonoDb {
 }
 
 impl MonoDb {
-    pub fn open(path:&str) -> Result<Self> {
+    pub fn open(path: &str) -> Result<Self> {
         let conn = Connection::open(path)?;
         conn.execute_batch(
             "
@@ -17,7 +17,7 @@ impl MonoDb {
                 kind TEXT NOT NULL,
                 kind_type TEXT,
                 spec_id INTEGER,
-                level_id INTEGER,
+                level_id INTEGER
             );
 
             CREATE TABLE IF NOT EXISTS placement_pose (
@@ -31,9 +31,9 @@ impl MonoDb {
                 qw REAL NOT NULL,
                 FOREIGN KEY (element_id) REFERENCES elements(id)
             );
-
             ",
         )?;
+
         Ok(Self { conn })
     }
 }
