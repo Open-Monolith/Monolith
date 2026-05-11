@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use  bevy::prelude::*;
 
 use crate::elements::{
     ElementKind,
@@ -7,7 +8,8 @@ use crate::elements::{
 
 // The id of each element
 // Later will be revised to use timestampt bit + node + seq
-pub type ElementId = i64;
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ElementId(pub i64);
 
 // Parameters implementation.
 // I hope its not a pain in the ass to revise when duckdb is attached
@@ -26,7 +28,7 @@ pub enum ParamValue {
 pub type ElementParams = BTreeMap<ParamKey, ParamValue>;
 
 // Element base class
-#[derive(Clone, Debug)]
+#[derive(Component, Clone, Debug)]
 pub struct ElementHeader {
     pub id: ElementId,
     pub name: Option<String>,
@@ -34,6 +36,6 @@ pub struct ElementHeader {
     pub kind_type: Option<ElementKindType>,
     pub spec_id: Option<ElementId>,
     pub level_id: Option<ElementId>,
-    pub params: ElementParams
+    // pub params: ElementParams
 }
 

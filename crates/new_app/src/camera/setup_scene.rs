@@ -1,13 +1,26 @@
 use bevy::camera::visibility::RenderLayers;
 use bevy::prelude::*;
+use new_core::element::{ElementHeader, ElementId};
+use new_core::elements::{ElementKind, ElementKindType};
+use new_core::elements::element_kindtype_enums::DuctSegmentType;
 use crate::editor::selection::picking::Selectable;
 
 pub fn setup_scene(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-) {
+) {                                                                                                                                                                                                                                                                                                                                                                                                                                             
     commands.spawn((
+        ElementHeader {
+            id: ElementId(1),
+            name: Some("new item".to_owned()),
+            kind: ElementKind::DuctSegment,
+            kind_type: Some(ElementKindType::DuctSegment(
+                DuctSegmentType::RIGIDSEGMENT
+            )),
+            spec_id: Some(ElementId(12)),
+            level_id: Some(ElementId(12)),
+        },
         Mesh3d(meshes.add(Plane3d::default().mesh().size(10.0, 10.0))),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: Color::srgb(0.18, 0.20, 0.22),

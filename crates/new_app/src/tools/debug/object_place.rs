@@ -1,20 +1,20 @@
 use bevy::prelude::*;
 use bevy::input::mouse::MouseButton;
 use bevy::window::PrimaryWindow;
-use new_core::VisibleViewports;
+use new_core::{VisibleViewports, element::ElementHeader};
 
 use bevy_egui::egui;
-use new_core::{GameViewportCamera, VisibleViewports};
+use new_core::{GameViewportCamera};
 
 
 pub fn place_object_here(
     visible_viewports: Res<VisibleViewports>,
-
+    elements: Query<(), With<ElementHeader>>,
     mouse: Res<ButtonInput<MouseButton>>,
     window: Single<&Window, With<PrimaryWindow>>,
     keys: Res<ButtonInput<KeyCode>>,
     cameras: Query<(&Camera, &GlobalTransform, &GameViewportCamera)>,
-
+    mut ray_cast: MeshRayCast
 ) {
     if  keys.pressed(KeyCode::ControlLeft) && !mouse.just_pressed(MouseButton::Left) {
         return;
@@ -39,6 +39,20 @@ pub fn place_object_here(
     let Ok(ray) = camera.viewport_to_world(camera_transform, cursor) else {
       return;  
     };
+
+    let filter = |entity: Entity| elements.contains(entity);
+
+    let settings = MeshRayCastSettings::default()
+        .with_filter(&filter)
+        .with_visibility(RayCastVisibility::Visible);
+
+    let hit_entity = ray_cast
+        .cast_ray(ray, &settings)
+        .first()
+        .map(|(entity, _hit)| *entity);
+    
+    
+
 }
 
 

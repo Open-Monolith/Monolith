@@ -15,21 +15,24 @@ pub fn insert_element(
         .as_ref()
         .map(|kind_type| kind_type.to_string());
 
+    let spec_id = header.spec_id.map(|id|id.0);
+    let level_id = header.spec_id.map(|id| id.0);
+
     db.conn.execute(
         "
         INSERT INTO elements (name, kind, kind_type, spec_id, level_id)
         VALUES (?1, ?2, ?3, ?4, ?5)
-        ",
+        ", 
         params![
             header.name.as_deref(),
             header.kind.to_string(),
             kind_type.as_deref(),
-            header.spec_id,
-            header.level_id,
+            spec_id,
+            level_id,
         ],
     )?;
 
-    let element_id: ElementId = db.conn.last_insert_rowid();
+    let element_id = ElementId(db.conn.last_insert_rowid());
     insert_placement(db, element_id, placement)?;
 
     Ok(element_id)
@@ -55,7 +58,7 @@ pub fn insert_pose(db: &MonoDb, element_id: ElementId, pose: &Pose3) -> Result<(
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
         ",
         params![
-            element_id,
+            element_id.0,
             pose.position.x,
             pose.position.y,
             pose.position.z,
