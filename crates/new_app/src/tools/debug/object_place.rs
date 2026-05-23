@@ -1,22 +1,30 @@
+use bevy::camera::visibility::RenderLayers;
 use bevy::prelude::*;
 use bevy::input::mouse::MouseButton;
 use bevy::window::PrimaryWindow;
-use new_core::{VisibleViewports, element::ElementHeader};
-
+use new_core::{VisibleViewports};
+use new_core::element::{ElementHeader, ElementId};
+use new_core::elements::{ElementKind, ElementKindType};
 use bevy_egui::egui;
+use new_core::elements::element_kindtype_enums::DuctSegmentType;
+use crate::editor::selection::picking::Selectable;
+
 use new_core::{GameViewportCamera};
 
 
 pub fn place_object_here(
+    mut commands: Commands,
+    mut materials: ResMut<Assets<StandardMaterial>>,
     visible_viewports: Res<VisibleViewports>,
     elements: Query<(), With<ElementHeader>>,
     mouse: Res<ButtonInput<MouseButton>>,
     window: Single<&Window, With<PrimaryWindow>>,
     keys: Res<ButtonInput<KeyCode>>,
     cameras: Query<(&Camera, &GlobalTransform, &GameViewportCamera)>,
-    mut ray_cast: MeshRayCast
+    mut mesh_params: ParamSet<(MeshRayCast, ResMut<Assets<Mesh>>)>
 ) {
-    if  keys.pressed(KeyCode::ControlLeft) && !mouse.just_pressed(MouseButton::Left) {
+    let ctrl = keys.pressed(KeyCode::ControlLeft);
+    if !(ctrl && mouse.just_pressed(MouseButton::Left)) {
         return;
     }
 
@@ -40,19 +48,41 @@ pub fn place_object_here(
       return;  
     };
 
-    let filter = |entity: Entity| elements.contains(entity);
 
-    let settings = MeshRayCastSettings::default()
-        .with_filter(&filter)
-        .with_visibility(RayCastVisibility::Visible);
+    let Some(some_place) = ray.plane_intersection_point(
+        Vec3::ZERO,                    // point on plane
+        InfinitePlane3d::new(Vec3::Y), // XY plane, normal points up Z
+    ) else {
+        return;
+    };
 
-    let hit_entity = ray_cast
-        .cast_ray(ray, &settings)
-        .first()
-        .map(|(entity, _hit)| *entity);
+
+    // let mut mesh = mesh_params.p1();
     
-    
+    commands.spawn((
+        ElementHeader {
+            id: ElementId(1),
+            name: Some("new item".to_owned()),
+            kind: ElementKind::DuctSegment,
+            kind_type: Some(ElementKindType::DuctSegment(
+                DuctSegmentType::RIGIDSEGMENT
+            )),
+            spec_id: Some(ElementId(12)),
+            level_id: Some(ElementId(12)),
+        },
+        Mesh3d(mesh_params.p1().add(Sphere::new(0.3).mesh().uv(32, 18))),
+        MeshMaterial3d(materials.add(StandardMaterial {
+            base_color: Color::srgb(0.25, 0.55, 0.95),
+            ..default()
+        })),
+        Transform::from_translation(some_place),
+        RenderLayers::layer(0), 
+        Selectable,
+    ));
 
+
+    
+    println!("Hit entity: {:?}", some_place);
 }
 
 

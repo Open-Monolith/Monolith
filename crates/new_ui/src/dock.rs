@@ -1,9 +1,12 @@
 use bevy::prelude::*;
 use bevy_egui::{EguiContexts, egui};
-use egui_tiles::{Behavior, TileId, Tiles, Tree, UiResponse};
+use egui_tiles::{TileId, Tiles, Container, Tile, Tree};
 use std::collections::HashMap;
 
-use new_core::{DockTree, Pane, PaneKind, UiState, VisibleViewports};
+use new_core::{DockTree, Pane, UiState, VisibleViewports};
+use new_core::pane_kind::PaneKind;
+
+use crate::tree::TreeBehavior;
 
 pub fn setup_dock(mut commands: Commands) {
     let mut tiles = Tiles::<Pane>::default();
@@ -12,7 +15,15 @@ pub fn setup_dock(mut commands: Commands) {
     let properties = tiles.insert_pane(Pane { id: 2, kind: PaneKind::Properties });
     let viewport = tiles.insert_pane(Pane { id: 3, kind: PaneKind::Viewport });
 
-    let root = tiles.insert_tab_tile(vec![console, properties, viewport]);
+    let center = tiles.insert_tab_tile(vec![viewport]);
+    let right = tiles.insert_tab_tile(vec![properties, console]);
+
+    let root = tiles.insert_horizontal_tile(vec![center, right]);
+
+    if let Some(Tile::Container(Container::Linear(linear))) = tiles.get_mut(root) {
+        linear.shares.set_share(center, 4.0);
+        linear.shares.set_share(right, 1.0);
+    }
 
     commands.insert_resource(DockTree {
         tree: Tree::new("monolith_tree", root, tiles),
@@ -24,6 +35,7 @@ pub fn setup_dock(mut commands: Commands) {
     commands.insert_resource(VisibleViewports::default());
 }
 
+
 pub fn dock_ui_system(
     mut contexts: EguiContexts,
     mut dock: ResMut<DockTree>,
@@ -34,177 +46,136 @@ pub fn dock_ui_system(
         return;
     };
 
-    // When a tile is dropped into an existing Tabs container, egui_tiles adds it
-    // as a child but does NOT change the active tab. pane_ui is never called for
-    // the new tile, so its rect is never written and nothing updates.
-    // We detect new children by diffing snapshots and call set_active ourselves.
-    let all_tile_ids: Vec<TileId> = dock.tree.tiles.tile_ids().collect();
-    let prev_tab_children: HashMap<TileId, Vec<TileId>> = all_tile_ids
-        .iter()
-        .filter_map(|&tid| {
-            if let Some(egui_tiles::Tile::Container(egui_tiles::Container::Tabs(tabs))) =
-                dock.tree.tiles.get(tid)
-            {
-                Some((tid, tabs.children.clone()))
-            } else {
-                None
-            }
-        })
-        .collect();
+    let pointer_busy = ctx.input(|i| {
+        i.pointer.any_down() || i.pointer.any_released()
+    });
 
-    let mut frame_viewports = HashMap::new();
+    let prev_tab_children = if pointer_busy {
+        Some(collect_tab_children(&dock.tree))
+    } else {
+        None
+    };
+
     egui::CentralPanel::default()
         .frame(egui::Frame::NONE)
         .show(ctx, |ui| {
             let mut behavior = TreeBehavior {
                 ui_state: &mut ui_state,
-                visible_viewports: &mut frame_viewports,
             };
+
             dock.tree.ui(&mut behavior, ui);
         });
 
-    // ── Auto-activate any tile dropped into an existing tab container ──────────
-    // Collect first so we can then mutate without fighting the borrow checker.
-    let current_tile_ids: Vec<TileId> = dock.tree.tiles.tile_ids().collect();
-    let to_activate: Vec<(TileId, TileId)> = current_tile_ids
-        .iter()
-        .filter_map(|&container_tid| {
-            let egui_tiles::Tile::Container(egui_tiles::Container::Tabs(tabs)) =
-                dock.tree.tiles.get(container_tid)?
-            else {
+    if let Some(prev_tab_children) = prev_tab_children {
+        let repaired = repair_tabs_after_tree_ui(&mut dock.tree, &prev_tab_children);
+
+        if repaired {
+            visible_viewports.rects.clear();
+            ctx.request_repaint();
+            return;
+        }
+    }
+
+    let new_viewports = collect_visible_viewports(&dock.tree);
+
+    if visible_viewports.rects != new_viewports {
+        visible_viewports.rects = new_viewports;
+    }
+
+    if pointer_busy {
+        ctx.request_repaint();
+    }
+}
+
+fn collect_tab_children(tree: &Tree<Pane>) -> HashMap<TileId, Vec<TileId>> {
+    tree.tiles
+        .tile_ids()
+        .filter_map(|tile_id| {
+            let Some(Tile::Container(Container::Tabs(tabs))) = tree.tiles.get(tile_id) else {
                 return None;
             };
-            let prev = prev_tab_children.get(&container_tid)?;
-            // Find the first child that didn't exist before the UI call
-            tabs.children
-                .iter()
-                .find(|&&c| !prev.contains(&c))
-                .map(|&new_child| (container_tid, new_child))
+
+            Some((tile_id, tabs.children.clone()))
         })
-        .collect();
-
-    for (container_tid, new_child) in to_activate {
-        if let Some(egui_tiles::Tile::Container(egui_tiles::Container::Tabs(tabs))) =
-            dock.tree.tiles.get_mut(container_tid)
-        {
-            tabs.set_active(new_child);
-        }
-    }
-
-    visible_viewports.rects = frame_viewports;
+        .collect()
 }
 
+fn repair_tabs_after_tree_ui(
+    tree: &mut Tree<Pane>,
+    prev_tab_children: &HashMap<TileId, Vec<TileId>>,
+) -> bool {
+    let tile_ids: Vec<TileId> = tree.tiles.tile_ids().collect();
+    let mut to_activate: Vec<(TileId, TileId)> = Vec::new();
 
-struct TreeBehavior<'a> {
-    ui_state: &'a mut UiState,
-    visible_viewports: &'a mut HashMap<u32, egui::Rect>,
+    for container_id in tile_ids {
+        let Some(Tile::Container(Container::Tabs(tabs))) = tree.tiles.get(container_id) else {
+            continue;
+        };
+
+        if tabs.children.is_empty() {
+            continue;
+        }
+
+        // CASE 1:
+        // A pane was dropped into this Tabs container.
+        // Your current code already handled this case.
+        if let Some(prev_children) = prev_tab_children.get(&container_id) {
+            if let Some(&new_child) = tabs
+                .children
+                .iter()
+                .find(|&&child| !prev_children.contains(&child))
+            {
+                to_activate.push((container_id, new_child));
+                continue;
+            }
+        }
+
+        // CASE 2:
+        // The active tab was dragged out/reparented.
+        // This is your remaining bug.
+        let active_is_bad = match tabs.active {
+            Some(active) => !tabs.children.contains(&active),
+            None => true,
+        };
+
+        if active_is_bad {
+            if let Some(&fallback_child) = tabs.children.first() {
+                to_activate.push((container_id, fallback_child));
+            }
+        }
+    }
+
+    if to_activate.is_empty() {
+        return false;
+    }
+
+    for (container_id, child_id) in to_activate {
+        if let Some(Tile::Container(Container::Tabs(tabs))) = tree.tiles.get_mut(container_id) {
+            tabs.set_active(child_id);
+        }
+    }
+
+    true
 }
 
-impl Behavior<Pane> for TreeBehavior<'_> {
-    fn tab_title_for_pane(&mut self, pane: &Pane) -> egui::WidgetText {
-        match pane.kind {
-            PaneKind::Console => "Console".into(),
-            PaneKind::Properties => "Properties".into(),
-            PaneKind::Viewport => "Viewport".into(),
-        }
-    }
+pub fn collect_visible_viewports(tree: &Tree<Pane>) -> HashMap<u32, egui::Rect> {
+    let mut rects = HashMap::new();
 
-    fn tab_ui(
-        &mut self,
-        tiles: &mut Tiles<Pane>,
-        ui: &mut egui::Ui,
-        id: egui::Id,
-        tile_id: egui_tiles::TileId,
-        state: &egui_tiles::TabState,
-    ) -> egui::Response {
-        let title = self.tab_title_for_tile(tiles, tile_id);
-
-        let text_color = if state.active {
-            egui::Color32::WHITE
-        } else if state.is_being_dragged {
-            egui::Color32::LIGHT_BLUE
-        } else {
-            egui::Color32::GRAY
+    for (&tile_id, tile) in tree.tiles.iter() {
+        let Tile::Pane(pane) = tile else {
+            continue;
         };
 
-        let stroke = if state.active {
-            egui::Stroke::new(1.0, ui.visuals().widgets.active.bg_fill)
-        } else {
-            egui::Stroke::new(1.0, ui.visuals().widgets.noninteractive.bg_stroke.color)
+        if pane.kind != PaneKind::Viewport {
+            continue;
+        }
+
+        let Some(rect) = tree.tiles.rect(tile_id) else {
+            continue;
         };
 
-        let fill = if state.active {
-            ui.visuals().panel_fill
-        } else {
-            egui::Color32::TRANSPARENT
-        };
-
-        let frame = egui::Frame::NONE
-            .inner_margin(egui::Margin::symmetric(8, 4))
-            .show(ui, |ui| {
-                ui.add(
-                    egui::Label::new(
-                        egui::RichText::new(title.text().to_owned()).color(text_color),
-                    )
-                    .selectable(false)
-                    .sense(egui::Sense::hover()),
-                )
-            });
-
-        let tab_response = ui.interact(frame.response.rect, id, egui::Sense::click_and_drag());
-
-        if tab_response.hovered() {
-            ui.ctx().set_cursor_icon(if state.is_being_dragged {
-                egui::CursorIcon::Grabbing
-            } else {
-                egui::CursorIcon::Grab
-            });
-        }
-
-        if state.active && !state.is_being_dragged {
-            ui.painter().hline(
-                frame.response.rect.x_range(),
-                frame.response.rect.bottom(),
-                egui::Stroke::new(stroke.width + 1.0, fill),
-            );
-        }
-
-        tab_response
+        rects.insert(pane.id, rect);
     }
 
-    fn pane_ui(&mut self, ui: &mut egui::Ui, _tile_id: TileId, pane: &mut Pane) -> UiResponse {
-        match pane.kind {
-            PaneKind::Console => {
-                paint_opaque_pane_background(ui);
-                ui.heading("Console");
-                ui.horizontal(|ui| {
-                    ui.label("Filter:");
-                    ui.text_edit_singleline(&mut self.ui_state.console_filter);
-                });
-            }
-            PaneKind::Properties => {
-                paint_opaque_pane_background(ui);
-                ui.heading("Properties");
-                ui.checkbox(&mut self.ui_state.props_enabled, "Enabled");
-            }
-            PaneKind::Viewport => {
-                let rect = ui.max_rect();
-                self.visible_viewports.insert(pane.id, rect);
-                let _ = ui.allocate_rect(rect, egui::Sense::hover());
-            }
-        }
-        UiResponse::None
-    }
-
-    fn simplification_options(&self) -> egui_tiles::SimplificationOptions {
-        egui_tiles::SimplificationOptions {
-            all_panes_must_have_tabs: true,
-            ..Default::default()
-        }
-    }
-}
-
-fn paint_opaque_pane_background(ui: &egui::Ui) {
-    ui.painter()
-        .rect_filled(ui.max_rect(), 0.0, ui.visuals().panel_fill);
+    rects
 }

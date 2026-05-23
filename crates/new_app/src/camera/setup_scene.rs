@@ -11,16 +11,7 @@ pub fn setup_scene(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {                                                                                                                                                                                                                                                                                                                                                                                                                                             
     commands.spawn((
-        ElementHeader {
-            id: ElementId(1),
-            name: Some("new item".to_owned()),
-            kind: ElementKind::DuctSegment,
-            kind_type: Some(ElementKindType::DuctSegment(
-                DuctSegmentType::RIGIDSEGMENT
-            )),
-            spec_id: Some(ElementId(12)),
-            level_id: Some(ElementId(12)),
-        },
+
         Mesh3d(meshes.add(Plane3d::default().mesh().size(10.0, 10.0))),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: Color::srgb(0.18, 0.20, 0.22),
@@ -31,6 +22,16 @@ pub fn setup_scene(
     ));
 
     commands.spawn((
+                ElementHeader {
+            id: ElementId(1),
+            name: Some("new item".to_owned()),
+            kind: ElementKind::DuctSegment,
+            kind_type: Some(ElementKindType::DuctSegment(
+                DuctSegmentType::RIGIDSEGMENT
+            )),
+            spec_id: Some(ElementId(12)),
+            level_id: Some(ElementId(12)),
+        },
         Mesh3d(meshes.add(Sphere::new(0.8).mesh().uv(32, 18))),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: Color::srgb(0.25, 0.55, 0.95),

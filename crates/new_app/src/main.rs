@@ -6,6 +6,8 @@ pub mod editor;
 pub mod tools;
 
 use crate::editor::selection::selection_plugin;
+use crate::tools::debug::debug_plugin;
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
@@ -15,5 +17,6 @@ fn main() {
         .add_plugins(camera::camera_plugin::AppCameraPlugin)
         .add_plugins(new_ui::UIPlugin)
         .add_plugins(selection_plugin::SelectionPlugin)
+        .add_plugins(debug_plugin::DebugPlugin)
         .run();
 }

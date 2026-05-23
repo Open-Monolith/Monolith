@@ -73,7 +73,6 @@ pub fn select_with_left_click(
         &mut commands
     );
 
-    println!("{}", cursor);
 }
 
 fn set_selection(

@@ -1,19 +1,17 @@
 use bevy::prelude::*;
 use bevy_egui::egui;
-use egui_tiles::Tree;
+use egui_tiles::{TileId, Tree};
 use std::collections::HashMap;
 
 
 pub mod element;
 pub mod elements;
 pub mod placement;
+pub mod pane_kind;
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum PaneKind {
-    Console,
-    Properties,
-    Viewport,
-}
+use crate::pane_kind::{
+    PaneKind
+};
 
 #[derive(Clone, Debug)]
 pub struct Pane {
