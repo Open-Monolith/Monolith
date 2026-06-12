@@ -12,6 +12,6 @@ pub mod tree;
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_dock)
-            .add_systems(EguiPrimaryContextPass, dock_ui_system);
+           .add_systems(EguiPrimaryContextPass, dock_ui_system);
     }
 }
